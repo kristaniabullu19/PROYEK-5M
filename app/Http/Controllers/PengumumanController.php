@@ -2,47 +2,70 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pengumuman;
 use Illuminate\Http\Request;
 
 class PengumumanController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $data = Pengumuman::latest()->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data pengumuman berhasil diambil',
+            'data' => $data
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'judul' => 'required|string|max:255',
+            'isi' => 'required|string'
+        ]);
+
+        $pengumuman = Pengumuman::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pengumuman berhasil ditambahkan',
+            'data' => $pengumuman
+        ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show(Pengumuman $pengumuman)
     {
-        //
+        return response()->json([
+            'success' => true,
+            'message' => 'Detail pengumuman',
+            'data' => $pengumuman
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Pengumuman $pengumuman)
     {
-        //
+        $validated = $request->validate([
+            'judul' => 'sometimes|required|string|max:255',
+            'isi' => 'sometimes|required|string'
+        ]);
+
+        $pengumuman->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pengumuman berhasil diperbarui',
+            'data' => $pengumuman
+        ]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(Pengumuman $pengumuman)
     {
-        //
+        $pengumuman->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pengumuman berhasil dihapus'
+        ]);
     }
 }
