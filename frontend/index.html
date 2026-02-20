@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KLIK - Kemudahan Layanan Informasi Kepegawaian</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .scrolling-text { overflow: hidden; white-space: nowrap; }
+        .scrolling-text span { display: inline-block; padding-left: 100%; animation: scroll-left 20s linear infinite; }
+        @keyframes scroll-left { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+        .modal { display: none; position: fixed; z-index: 1000; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
+        .modal.active { display: flex; align-items: center; justify-content: center; }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.12); }
+        .gradient-bps { background: linear-gradient(135deg, #0f172a 0%, #1e40af 100%); }
+        .sidebar { transition: transform 0.3s ease; }
+        .sidebar-collapsed { transform: translateX(-100%); }
+        @media (max-width: 768px) { .sidebar { position: fixed; z-index: 40; height: 100vh; } }
+        .sidebar-item { transition: all 0.2s ease; border-left: 3px solid transparent; }
+        .sidebar-item:hover { background: rgba(59,130,246,0.1); border-left-color: #3b82f6; }
+        .sidebar-item.active { background: rgba(59,130,246,0.15); border-left-color: #3b82f6; font-weight: 600; }
+        .admin-badge { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+        .admin-badge.pengelola { background: linear-gradient(135deg,#f59e0b,#d97706); color: white; }
+        .admin-badge.kepegawaian { background: linear-gradient(135deg,#10b981,#059669); color: white; }
+        .chart-container { position: relative; height: 320px; width: 100%; }
+        .spinner { border: 3px solid #f3f3f3; border-top: 3px solid #3b82f6; border-radius: 50%; width: 24px; height: 24px; animation: spin 0.8s linear infinite; display: inline-block; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .toast { position: fixed; bottom: 24px; right: 24px; z-index: 9999; padding: 12px 20px; border-radius: 10px; font-weight: 600; font-size: 14px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); animation: slideUp 0.3s ease; }
+        .toast.success { background: #10b981; color: white; }
+        .toast.error   { background: #ef4444; color: white; }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+<!-- Navbar -->
+<nav class="gradient-bps shadow-lg sticky top-0 z-50">
+  <div class="max-w-full px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16">
+      <div class="flex items-center space-x-3">
+        <button id="sidebarToggle" class="text-white p-2 rounded-lg hover:bg-blue-800 md:hidden">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <img src="../uploads/logo_bps.png" alt="BPS" class="w-8 h-8 object-contain" onerror="this.style.display='none'">
+        <div>
+          <h1 class="text-white text-xl font-bold">KLIK</h1>
+          <p class="text-blue-100 text-xs">Kemudahan Layanan Informasi Kepegawaian</p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-4">
+        <div id="userInfo" class="hidden text-white text-sm"></div>
+        <button onclick="showLoginModal()" id="loginBtn" class="text-white hover:bg-blue-700 px-4 py-2 rounded-lg transition">Login</button>
+        <button onclick="showLogoutModal()" id="logoutBtn" class="hidden text-white hover:bg-blue-700 px-4 py-2 rounded-lg transition">Logout</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Scrolling Banner -->
+<div class="bg-gradient-to-r from-yellow-400 to-orange-400 py-2 scrolling-text shadow-md">
+    <span id="scrollingText" class="text-gray-800 font-semibold">Memuat...</span>
+</div>
+
+<div class="flex">
+  <!-- Sidebar -->
+  <aside id="sidebar" class="w-64 bg-white shadow-xl min-h-screen sidebar md:translate-x-0">
+    <div class="p-6">
+      <h2 class="text-lg font-bold text-gray-800 mb-4">Menu</h2>
+      <nav class="space-y-1">
+        <a href="#" onclick="showSection('home')" class="sidebar-item active flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          <span>Beranda</span>
+        </a>
+        <div class="pt-4 pb-2"><h3 class="text-xs font-semibold text-gray-400 uppercase px-3">Layanan Kepegawaian</h3></div>
+        <a href="#" onclick="showSection('kenaikan-pangkat')" class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+          <span>Kenaikan Pangkat</span>
+        </a>
+        <a href="https://simpeg.bps.go.id" target="_blank" class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg><span>KARIS/KARSU</span></a>
+        <a href="https://simpeg.bps.go.id" target="_blank" class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg><span>Perkawinan Pertama</span></a>
+        <a href="https://simpeg.bps.go.id" target="_blank" class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><span>Pensiun</span></a>
+        <a href="https://kipapp.bps.go.id" target="_blank" class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg><span>Konseling</span></a>
+        <div class="pt-4 pb-2"><h3 class="text-xs font-semibold text-gray-400 uppercase px-3">Aplikasi</h3></div>
+        <a href="https://simpeg.bps.go.id" target="_blank" class="sidebar-item p-3 rounded-lg text-gray-700 block">SIMPEG</a>
+        <a href="https://kipapp.bps.go.id" target="_blank" class="sidebar-item p-3 rounded-lg text-gray-700 block">KipApp</a>
+        <a href="https://backoffice.bps.go.id" target="_blank" class="sidebar-item p-3 rounded-lg text-gray-700 block">BOS</a>
+        <a href="https://sipecut.bps.go.id" target="_blank" class="sidebar-item p-3 rounded-lg text-gray-700 block">SIPECUT</a>
+        <div class="pt-4 pb-2"><h3 class="text-xs font-semibold text-gray-400 uppercase px-3">Informasi</h3></div>
+        <a href="#" onclick="showSection('gallery')" class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg><span>Galeri SDM</span></a>
+        <a href="#" onclick="showSection('tim-kerja')" class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg><span>Tim Kerja SDM & Hukum</span></a>
+        <a href="#" onclick="showSection('faq')" class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><span>FAQ</span></a>
+        <a href="#" onclick="showSection('kontak')" class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg><span>Kontak</span></a>
+        <div id="adminMenuSection" class="hidden">
+          <div class="pt-4 pb-2"><h3 class="text-xs font-semibold text-gray-400 uppercase px-3">Admin</h3></div>
+          <a href="#" onclick="showAdminDashboard()" class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg><span>Dashboard Admin</span></a>
+        </div>
+      </nav>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-4 md:p-8">
+
+    <!-- Beranda -->
+    <div id="homeSection" class="content-section">
+      <div class="mb-6"><h1 class="text-3xl font-bold text-gray-800">Selamat Datang di KLIK</h1><p class="text-gray-600 mt-2">Kemudahan Layanan Informasi Kepegawaian - BPS</p></div>
+      <div class="bg-white rounded-xl shadow-lg p-6">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center"><svg class="w-7 h-7 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/></svg>Pengumuman</h2>
+        <div id="pengumumanList" class="space-y-4"><div class="text-center py-8"><div class="spinner mx-auto"></div></div></div>
+      </div>
+    </div>
+
+    <!-- Kenaikan Pangkat -->
+    <div id="kenaikanPangkatSection" class="content-section hidden">
+      <div class="mb-6"><h1 class="text-3xl font-bold text-gray-800">Kenaikan Pangkat</h1><p class="text-gray-600 mt-2">Informasi dan rekap kenaikan pangkat pegawai</p></div>
+      <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+        <a href="https://simpeg.bps.go.id" target="_blank" class="block bg-gradient-to-r from-blue-600 to-blue-700 text-white text-center py-4 rounded-lg hover:from-blue-700 hover:to-blue-800 transition font-semibold text-lg shadow-md">📋 Akses SIMPEG untuk Kenaikan Pangkat</a>
+      </div>
+      <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+        <h3 class="font-bold text-xl mb-4 text-gray-800">Link Periode KP</h3>
+        <div id="kpPeriodList" class="space-y-2"><div class="text-center py-4"><div class="spinner mx-auto"></div></div></div>
+      </div>
+      <div class="bg-white rounded-xl shadow-lg p-6">
+        <h3 class="font-bold text-xl mb-4 text-gray-800">Rekap Bulanan</h3>
+        <div class="flex flex-wrap gap-3 mb-6">
+          <select id="kpMonthSelect" onchange="loadKPRecap()" class="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+            <option value="2024-01">Januari 2024</option>
+            <option value="2024-02">Februari 2024</option>
+            <option value="2024-03">Maret 2024</option>
+          </select>
+          <button onclick="exportKPToExcel()" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition font-semibold shadow-md">📊 Export ke Excel</button>
+        </div>
+        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl mb-6">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-white rounded-xl p-4 shadow-sm text-center"><p class="text-3xl font-bold text-blue-600" id="statTotal">0</p><p class="text-xs text-gray-500 mt-1">Total Pegawai</p></div>
+            <div class="bg-white rounded-xl p-4 shadow-sm text-center"><p class="text-3xl font-bold text-green-600" id="statGolIII">0</p><p class="text-xs text-gray-500 mt-1">Golongan III</p></div>
+            <div class="bg-white rounded-xl p-4 shadow-sm text-center"><p class="text-3xl font-bold text-purple-600" id="statGolIV">0</p><p class="text-xs text-gray-500 mt-1">Golongan IV</p></div>
+            <div class="bg-white rounded-xl p-4 shadow-sm text-center"><p class="text-3xl font-bold text-orange-500" id="statGolII">0</p><p class="text-xs text-gray-500 mt-1">Golongan II</p></div>
+          </div>
+          <div class="chart-container bg-white rounded-xl p-4 shadow-sm"><canvas id="kpChart"></canvas></div>
+          <p class="text-center text-xs text-gray-400 mt-3">Distribusi Kenaikan Pangkat Berdasarkan Golongan</p>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse">
+            <thead><tr class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+              <th class="p-3 text-left font-semibold">No</th>
+              <th class="p-3 text-left font-semibold">Nama Pegawai</th>
+              <th class="p-3 text-left font-semibold">NIP</th>
+              <th class="p-3 text-left font-semibold">Pangkat Lama</th>
+              <th class="p-3 text-left font-semibold">Pangkat Baru</th>
+              <th class="p-3 text-left font-semibold">Tanggal Usulan</th>
+            </tr></thead>
+            <tbody id="kpTableBody" class="divide-y divide-gray-200"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gallery -->
+    <div id="gallerySection" class="content-section hidden">
+      <div class="mb-6"><h1 class="text-3xl font-bold text-gray-800">Galeri SDM</h1><p class="text-gray-600 mt-2">Dokumentasi kegiatan dan program SDM</p></div>
+      <div id="galleryGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"><div class="col-span-full text-center py-8"><div class="spinner mx-auto"></div></div></div>
+    </div>
+
+    <!-- Tim Kerja -->
+    <div id="timKerjaSection" class="content-section hidden">
+      <div class="mb-6"><h1 class="text-3xl font-bold text-gray-800">Tim Kerja SDM dan Hukum</h1><p class="text-gray-600 mt-2">Kontak dan informasi tim kerja</p></div>
+      <div id="timKerjaGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"><div class="col-span-full text-center py-8"><div class="spinner mx-auto"></div></div></div>
+    </div>
+
+    <!-- FAQ -->
+    <div id="faqSection" class="content-section hidden">
+      <div class="mb-6"><h1 class="text-3xl font-bold text-gray-800">FAQ</h1><p class="text-gray-600 mt-2">Tanya jawab seputar layanan kepegawaian</p></div>
+      <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+        <h3 class="font-bold text-xl mb-4 text-gray-800">Ajukan Pertanyaan</h3>
+        <textarea id="faqQuestion" class="w-full p-4 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" rows="4" placeholder="Tulis pertanyaan Anda..."></textarea>
+        <button onclick="submitQuestion()" class="mt-4 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition font-semibold">📤 Kirim Pertanyaan</button>
+      </div>
+      <div class="bg-white rounded-xl shadow-lg p-6">
+        <h3 class="font-bold text-xl mb-4 text-gray-800">Daftar Pertanyaan</h3>
+        <div id="faqList" class="space-y-4"><div class="text-center py-8"><div class="spinner mx-auto"></div></div></div>
+      </div>
+    </div>
+
+    <!-- Kontak -->
+    <div id="kontakSection" class="content-section hidden">
+      <div class="mb-6"><h1 class="text-3xl font-bold text-gray-800">Call Center / Kontak</h1></div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white rounded-xl shadow-lg p-8"><div class="flex items-center space-x-4"><div class="bg-blue-100 p-4 rounded-full"><svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg></div><div><h3 class="font-bold text-lg">Telepon</h3><p class="text-gray-600">(021) 123-4567</p></div></div></div>
+        <div class="bg-white rounded-xl shadow-lg p-8"><div class="flex items-center space-x-4"><div class="bg-green-100 p-4 rounded-full"><svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></div><div><h3 class="font-bold text-lg">Email</h3><p class="text-gray-600">kepegawaian@bps.go.id</p></div></div></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Login Modal -->
+<div id="loginModal" class="modal">
+  <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4">
+    <h2 class="text-3xl font-bold text-gray-800 mb-6">Login</h2>
+    <div class="space-y-4">
+      <div><label class="block text-gray-700 font-semibold mb-2">Username</label>
+        <input type="text" id="loginUsername" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" onkeydown="if(event.key==='Enter')login()">
+      </div>
+      <div><label class="block text-gray-700 font-semibold mb-2">Password</label>
+        <div class="relative">
+          <input type="password" id="loginPassword" class="w-full p-3 pr-12 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" onkeydown="if(event.key==='Enter')login()">
+          <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700" tabindex="-1">
+            <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+            <svg id="eyeOffIcon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/></svg>
+          </button>
+        </div>
+      </div>
+      <div id="loginError" class="hidden items-center space-x-2 bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded-lg text-sm">
+        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span id="loginErrorMsg">Username atau password tidak valid.</span>
+      </div>
+      <button onclick="login()" id="loginSubmitBtn" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-lg hover:from-blue-700 hover:to-indigo-700 transition font-semibold text-lg shadow-lg">Login</button>
+      <button onclick="closeLoginModal()" class="w-full bg-gray-200 text-gray-700 py-3 rounded-lg hover:bg-gray-300 transition font-semibold">Batal</button>
+    </div>
+  </div>
+</div>
+
+<!-- Logout Modal -->
+<div id="logoutModal" class="modal">
+  <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full mx-4 text-center">
+    <div class="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+      <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+    </div>
+    <h3 class="text-xl font-bold text-gray-800 mb-2">Konfirmasi Logout</h3>
+    <p id="logoutConfirmText" class="text-gray-500 mb-6"></p>
+    <div class="flex gap-3">
+      <button onclick="document.getElementById('logoutModal').classList.remove('active')" class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-lg hover:bg-gray-200 transition font-semibold">Batal</button>
+      <button onclick="confirmLogout()" class="flex-1 bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition font-semibold">Logout</button>
+    </div>
+  </div>
+</div>
+
+<!-- Admin Modal -->
+<div id="adminModal" class="modal">
+  <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-6xl w-full mx-4 max-h-screen overflow-y-auto">
+    <div class="flex justify-between items-center mb-6">
+      <div><h2 class="text-3xl font-bold text-gray-800">Dashboard Admin</h2><div id="adminRoleBadge" class="mt-2"></div></div>
+      <button onclick="document.getElementById('adminModal').classList.remove('active')" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 font-semibold">Tutup</button>
+    </div>
+    <div class="border-b-2 border-gray-200 mb-6">
+      <nav class="flex flex-wrap gap-2">
+        <button onclick="showAdminTab('scrolling')" class="admin-tab px-5 py-3 font-semibold text-blue-600 border-b-4 border-blue-600 rounded-t-lg">Scrolling Text</button>
+        <button onclick="showAdminTab('pengumuman')" class="admin-tab px-5 py-3 font-semibold text-gray-600 hover:text-blue-600 rounded-t-lg">Pengumuman</button>
+        <button onclick="showAdminTab('gallery')" class="admin-tab px-5 py-3 font-semibold text-gray-600 hover:text-blue-600 rounded-t-lg">Gallery</button>
+        <button onclick="showAdminTab('tim')" class="admin-tab px-5 py-3 font-semibold text-gray-600 hover:text-blue-600 rounded-t-lg">Tim Kerja</button>
+        <button onclick="showAdminTab('faq')" class="admin-tab px-5 py-3 font-semibold text-gray-600 hover:text-blue-600 rounded-t-lg">FAQ</button>
+        <button onclick="showAdminTab('kp')" class="admin-tab px-5 py-3 font-semibold text-gray-600 hover:text-blue-600 rounded-t-lg">Kenaikan Pangkat</button>
+      </nav>
+    </div>
+    <div id="adminTabContent"></div>
+  </div>
+</div>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────
+const API = 'http://127.0.0.1:8000/api';
+
+// ── STATE ────────────────────────────────────────────────
+let currentUser = JSON.parse(sessionStorage.getItem('klik_user') || 'null');
+let kpChartInstance = null;
+
+// ── API HELPER ────────────────────────────────────────────
+async function api(endpoint, method = 'GET', body = null, params = '') {
+    const url = `${API}/${endpoint}${params}`;
+    const opts = {
+        method,
+        headers: { 'Content-Type': 'application/json' }
+    };
+    if (currentUser?.token) opts.headers['Authorization'] = 'Bearer ' + currentUser.token;
+    if (body) opts.body = JSON.stringify(body);
+    try {
+        const res = await fetch(url, opts);
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Request gagal');
+        return data;
+    } catch (e) {
+        throw e;
+    }
+}
+
+// ── TOAST ─────────────────────────────────────────────────
+function toast(msg, type = 'success') {
+    const el = document.createElement('div');
+    el.className = `toast ${type}`;
+    el.textContent = msg;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 3000);
+}
+
+// ── INIT ─────────────────────────────────────────────────
+async function init() {
+    updateUIForUser();
+    loadSettings();
+    loadPengumuman();
+    loadKPPeriods();
+}
+
+async function loadSettings() {
+    try {
+        const data = await api('settings');
+        document.getElementById('scrollingText').textContent = data.scrolling_text;
+    } catch(e) {}
+}
+
+// ── SIDEBAR ───────────────────────────────────────────────
+document.getElementById('sidebarToggle').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.toggle('sidebar-collapsed');
+});
+
+function showSection(name) {
+    event?.preventDefault();
+    document.querySelectorAll('.content-section').forEach(s => s.classList.add('hidden'));
+    document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+    const map = { home:'homeSection', 'kenaikan-pangkat':'kenaikanPangkatSection', gallery:'gallerySection', 'tim-kerja':'timKerjaSection', faq:'faqSection', kontak:'kontakSection' };
+    document.getElementById(map[name])?.classList.remove('hidden');
+    event?.target?.closest('.sidebar-item')?.classList.add('active');
+    if (window.innerWidth < 768) document.getElementById('sidebar').classList.add('sidebar-collapsed');
+    // Lazy load
+    if (name === 'gallery') loadGallery();
+    if (name === 'tim-kerja') loadTimKerja();
+    if (name === 'faq') loadFAQ();
+    if (name === 'kenaikan-pangkat') { loadKPPeriods(); setTimeout(loadKPRecap, 100); }
+}
+
+// ── AUTH ──────────────────────────────────────────────────
+function showLoginModal() {
+    document.getElementById('loginModal').classList.add('active');
+    setTimeout(() => document.getElementById('loginUsername').focus(), 100);
+}
+function closeLoginModal() {
+    document.getElementById('loginModal').classList.remove('active');
+    document.getElementById('loginError').classList.add('hidden');
+    document.getElementById('loginError').classList.remove('flex');
+    document.getElementById('loginPassword').type = 'password';
+    document.getElementById('eyeIcon').classList.remove('hidden');
+    document.getElementById('eyeOffIcon').classList.add('hidden');
+    document.getElementById('loginUsername').value = '';
+    document.getElementById('loginPassword').value = '';
+}
+function togglePasswordVisibility() {
+    const inp = document.getElementById('loginPassword');
+    const show = inp.type === 'password';
+    inp.type = show ? 'text' : 'password';
+    document.getElementById('eyeIcon').classList.toggle('hidden', show);
+    document.getElementById('eyeOffIcon').classList.toggle('hidden', !show);
+}
+async function login() {
+    const username = document.getElementById('loginUsername').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    const errEl    = document.getElementById('loginError');
+    const btn      = document.getElementById('loginSubmitBtn');
+    errEl.classList.add('hidden'); errEl.classList.remove('flex');
+    if (!username || !password) {
+        document.getElementById('loginErrorMsg').textContent = 'Username dan password wajib diisi.';
+        errEl.classList.remove('hidden'); errEl.classList.add('flex'); return;
+    }
+    btn.disabled = true; btn.textContent = 'Memproses...';
+    try {
+        const data = await api('login', 'POST', { username, password });
+        currentUser = data;
+        sessionStorage.setItem('klik_user', JSON.stringify(data));
+        closeLoginModal();
+        updateUIForUser();
+        toast(`✅ Login berhasil sebagai ${data.username}`);
+    } catch(e) {
+        document.getElementById('loginErrorMsg').textContent = e.message;
+        errEl.classList.remove('hidden'); errEl.classList.add('flex');
+        document.getElementById('loginPassword').value = '';
+    } finally {
+        btn.disabled = false; btn.textContent = 'Login';
+    }
+}
+function showLogoutModal() {
+    const roleName = currentUser?.role === 'admin_pengelola' ? 'Admin Pengelola' : 'Admin Kepegawaian';
+    document.getElementById('logoutConfirmText').textContent = `Apakah Anda yakin ingin logout sebagai ${roleName}?`;
+    document.getElementById('logoutModal').classList.add('active');
+}
+function confirmLogout() {
+    currentUser = null;
+    sessionStorage.removeItem('klik_user');
+    document.getElementById('logoutModal').classList.remove('active');
+    document.getElementById('adminModal').classList.remove('active');
+    updateUIForUser();
+    toast('Logout berhasil');
+}
+function updateUIForUser() {
+    const loggedIn = !!currentUser;
+    document.getElementById('loginBtn').classList.toggle('hidden', loggedIn);
+    document.getElementById('logoutBtn').classList.toggle('hidden', !loggedIn);
+    document.getElementById('userInfo').classList.toggle('hidden', !loggedIn);
+    document.getElementById('adminMenuSection').classList.toggle('hidden', !loggedIn);
+    if (loggedIn) {
+        const roleName   = currentUser.role === 'admin_pengelola' ? 'Admin Pengelola' : 'Admin Kepegawaian';
+        const badgeClass = currentUser.role === 'admin_pengelola' ? 'pengelola' : 'kepegawaian';
+        document.getElementById('userInfo').innerHTML = `<div class="text-right"><div class="font-semibold">${currentUser.username}</div><div class="admin-badge ${badgeClass} text-xs">${roleName}</div></div>`;
+    }
+}
+
+// ── PENGUMUMAN ────────────────────────────────────────────
+async function loadPengumuman() {
+    try {
+        const data = await api('pengumuman');
+        renderPengumuman(data);
+    } catch(e) {
+        document.getElementById('pengumumanList').innerHTML = '<p class="text-red-500">Gagal memuat data.</p>';
+    }
+}
+function renderPengumuman(list) {
+    const el = document.getElementById('pengumumanList');
+    if (!list.length) { el.innerHTML = '<p class="text-gray-500 text-center py-8">Belum ada pengumuman</p>'; return; }
+    el.innerHTML = list.map(item => `
+        <div class="border-l-4 border-blue-600 bg-gradient-to-r from-blue-50 to-transparent pl-6 py-4 rounded-r-lg hover:shadow-md transition">
+            <h3 class="font-bold text-lg text-gray-800">${item.title}</h3>
+            <p class="text-gray-600 mt-2">${item.content}</p>
+            <p class="text-gray-500 text-sm mt-3">📅 ${new Date(item.date).toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'})}</p>
+        </div>`).join('');
+}
+
+// ── GALLERY ───────────────────────────────────────────────
+async function loadGallery() {
+    try {
+        const data = await api('gallery');
+        const grid = document.getElementById('galleryGrid');
+        if (!data.length) { grid.innerHTML = '<p class="text-gray-500 text-center py-8 col-span-full">Belum ada foto</p>'; return; }
+        grid.innerHTML = data.map(item => `
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden card-hover">
+                <img src="../${item.image_path}" alt="${item.title}" class="w-full h-56 object-cover">
+                <div class="p-4"><h3 class="font-bold text-gray-800">${item.title}</h3><p class="text-xs text-gray-500 mt-2">📅 ${new Date(item.date).toLocaleDateString('id-ID')}</p></div>
+            </div>`).join('');
+    } catch(e) {}
+}
+
+// ── TIM KERJA ─────────────────────────────────────────────
+async function loadTimKerja() {
+    try {
+        const data = await api('tim_kerja');
+        const grid = document.getElementById('timKerjaGrid');
+        if (!data.length) { grid.innerHTML = '<p class="text-gray-500 text-center py-8 col-span-full">Belum ada anggota tim</p>'; return; }
+        grid.innerHTML = data.map(member => `
+            <div class="bg-white rounded-xl shadow-lg p-6 text-center card-hover">
+                <img src="../${member.photo_path}" alt="${member.name}" class="w-28 h-28 rounded-full mx-auto mb-4 object-cover border-4 border-blue-100">
+                <h3 class="font-bold text-lg text-gray-800">${member.name}</h3>
+                <p class="text-sm text-gray-600 mb-3">${member.position}</p>
+                <div class="flex items-center justify-center text-blue-600 bg-blue-50 py-2 px-4 rounded-lg">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                    <span class="font-semibold">${member.phone}</span>
+                </div>
+            </div>`).join('');
+    } catch(e) {}
+}
+
+// ── FAQ ───────────────────────────────────────────────────
+async function loadFAQ() {
+    try {
+        const data = await api('faq');
+        renderFAQ(data);
+    } catch(e) {}
+}
+function renderFAQ(list) {
+    const el = document.getElementById('faqList');
+    if (!list.length) { el.innerHTML = '<p class="text-gray-500 text-center py-8">Belum ada pertanyaan</p>'; return; }
+    el.innerHTML = list.map(item => `
+        <div class="border-2 border-gray-200 rounded-xl p-5 bg-white">
+            <div class="flex items-start space-x-3"><span class="text-3xl">❓</span><h4 class="font-bold text-lg text-gray-800 mt-1">${item.question}</h4></div>
+            ${item.answer ? `<div class="mt-4 ml-12 p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500"><div class="flex items-start space-x-3"><span class="text-2xl">💡</span><p class="text-gray-700 mt-1">${item.answer}</p></div></div>` : `<p class="text-sm text-yellow-600 mt-3 ml-12 bg-yellow-50 py-2 px-4 rounded-lg inline-block">⏳ Menunggu jawaban</p>`}
+        </div>`).join('');
+}
+async function submitQuestion() {
+    const q = document.getElementById('faqQuestion').value.trim();
+    if (!q) { toast('Mohon tulis pertanyaan!', 'error'); return; }
+    try {
+        await api('faq', 'POST', { question: q });
+        document.getElementById('faqQuestion').value = '';
+        toast('✅ Pertanyaan berhasil dikirim!');
+        loadFAQ();
+    } catch(e) { toast(e.message, 'error'); }
+}
+
+// ── KP ────────────────────────────────────────────────────
+async function loadKPPeriods() {
+    try {
+        const data = await api('kp_periods');
+        const el = document.getElementById('kpPeriodList');
+        if (!data.length) { el.innerHTML = '<p class="text-gray-500 text-center py-4">Belum ada periode KP</p>'; return; }
+        el.innerHTML = data.map(p => {
+            const label = new Date(p.month+'-01').toLocaleDateString('id-ID',{month:'long',year:'numeric'});
+            return `<div class="flex items-center justify-between p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border-l-4 border-blue-500">
+                <span class="font-semibold text-gray-800">📅 ${label}</span>
+                <a href="${p.link}" target="_blank" class="text-blue-600 hover:underline font-semibold">Akses Link →</a>
+            </div>`;
+        }).join('');
+    } catch(e) {}
+}
+
+async function loadKPRecap() {
+    const month = document.getElementById('kpMonthSelect')?.value;
+    if (!month) return;
+    try {
+        const data = await api('kp_data', 'GET', null, '&month=' + month);
+        const stats = getGolonganStats(data);
+        document.getElementById('statTotal').textContent  = data.length;
+        document.getElementById('statGolIII').textContent = stats['Golongan III'];
+        document.getElementById('statGolIV').textContent  = stats['Golongan IV'];
+        document.getElementById('statGolII').textContent  = stats['Golongan II'];
+        const tbody = document.getElementById('kpTableBody');
+        tbody.innerHTML = !data.length
+            ? '<tr><td colspan="6" class="text-center py-8 text-gray-500">Belum ada data</td></tr>'
+            : data.map((item,i) => `<tr class="hover:bg-blue-50 transition">
+                <td class="p-3 text-center font-semibold">${i+1}</td>
+                <td class="p-3 font-semibold text-gray-800">${item.name}</td>
+                <td class="p-3 text-gray-700">${item.nip}</td>
+                <td class="p-3 text-gray-700">${item.old_rank}</td>
+                <td class="p-3 text-green-700 font-semibold">${item.new_rank}</td>
+                <td class="p-3 text-center text-gray-700">${new Date(item.date).toLocaleDateString('id-ID')}</td>
+            </tr>`).join('');
+        drawKPChart(data);
+    } catch(e) {}
+}
+
+function getGolonganStats(data) {
+    const s = {'Golongan II':0,'Golongan III':0,'Golongan IV':0,'Lainnya':0};
+    data.forEach(item => {
+        const r = (item.new_rank||'').toLowerCase();
+        if (r.includes('ii/') || r.includes('pengatur'))      s['Golongan II']++;
+        else if (r.includes('iii/') || r.includes('penata'))  s['Golongan III']++;
+        else if (r.includes('iv/') || r.includes('pembina'))  s['Golongan IV']++;
+        else s['Lainnya']++;
+    });
+    return s;
+}
+
+function drawKPChart(data) {
+    const canvas = document.getElementById('kpChart');
+    if (!canvas) return;
+    if (kpChartInstance) { kpChartInstance.destroy(); kpChartInstance = null; }
+    const stats  = getGolonganStats(data);
+    const labels = Object.keys(stats).filter(k => stats[k] > 0);
+    const values = labels.map(k => stats[k]);
+    kpChartInstance = new Chart(canvas.getContext('2d'), {
+        type: 'bar',
+        data: { labels, datasets: [{ label:'Jumlah Pegawai', data: values,
+            backgroundColor: ['rgba(245,158,11,0.85)','rgba(59,130,246,0.85)','rgba(139,92,246,0.85)','rgba(107,114,128,0.85)'],
+            borderColor: ['#d97706','#2563eb','#7c3aed','#4b5563'], borderWidth:2, borderRadius:8 }] },
+        options: { responsive:true, maintainAspectRatio:false,
+            plugins: { legend:{display:false}, tooltip:{callbacks:{label:c=>` ${c.formattedValue} pegawai`},backgroundColor:'#1e293b',padding:10,cornerRadius:8} },
+            scales: { y:{beginAtZero:true,ticks:{stepSize:1},grid:{color:'rgba(0,0,0,0.06)'}}, x:{grid:{display:false}} } }
+    });
+}
+
+async function exportKPToExcel() {
+    const monthVal = document.getElementById('kpMonthSelect').value;
+    const monthLabel = new Date(monthVal+'-01').toLocaleDateString('id-ID',{month:'long',year:'numeric'});
+    try {
+        const data = await api('kp_data','GET',null,'&month='+monthVal);
+        if (!data.length) { toast('Tidak ada data untuk di-export','error'); return; }
+        const borderStyle = { top:{style:'thin',color:{rgb:'CBD5E1'}}, bottom:{style:'thin',color:{rgb:'CBD5E1'}}, left:{style:'thin',color:{rgb:'CBD5E1'}}, right:{style:'thin',color:{rgb:'CBD5E1'}} };
+        const wb = XLSX.utils.book_new();
+        const aoa = [
+            [`BADAN PUSAT STATISTIK`,'','','','',''],
+            [`REKAP KENAIKAN PANGKAT — ${monthLabel.toUpperCase()}`,'','','','',''],
+            ['','','','','',''],
+            ['No','Nama Pegawai','NIP','Pangkat Lama','Pangkat Baru','Tanggal Usulan'],
+            ...data.map((r,i) => [i+1, r.name, r.nip, r.old_rank, r.new_rank, r.date]),
+            ['TOTAL PEGAWAI','','','','',data.length]
+        ];
+        const ws = XLSX.utils.aoa_to_sheet(aoa);
+        ws['!cols'] = [{wch:6},{wch:32},{wch:22},{wch:30},{wch:30},{wch:18}];
+        ws['!merges'] = [
+            {s:{r:0,c:0},e:{r:0,c:5}},{s:{r:1,c:0},e:{r:1,c:5}},{s:{r:2,c:0},e:{r:2,c:5}},
+            {s:{r:aoa.length-1,c:0},e:{r:aoa.length-1,c:4}}
+        ];
+        const applyS = (addr,s) => { if(ws[addr]) ws[addr].s=s; };
+        applyS('A1',{font:{name:'Arial',bold:true,sz:14,color:{rgb:'FFFFFF'}},fill:{patternType:'solid',fgColor:{rgb:'1E3A5F'}},alignment:{horizontal:'center',vertical:'center'}});
+        applyS('A2',{font:{name:'Arial',bold:true,sz:12,color:{rgb:'FFFFFF'}},fill:{patternType:'solid',fgColor:{rgb:'2563EB'}},alignment:{horizontal:'center',vertical:'center'}});
+        ['A','B','C','D','E','F'].forEach(c => {
+            const a=c+'4';
+            if(ws[a]) ws[a].s={font:{name:'Arial',bold:true,sz:11,color:{rgb:'FFFFFF'}},fill:{patternType:'solid',fgColor:{rgb:'1E3A5F'}},alignment:{horizontal:'center',vertical:'center'},border:borderStyle};
+        });
+        data.forEach((_,i) => {
+            const r=i+5; const bg=i%2===1?'F0F4FF':'FFFFFF';
+            ['A','B','C','D','E','F'].forEach((c,ci) => {
+                const a=c+r;
+                if(ws[a]) ws[a].s={font:{name:'Arial',sz:10,bold:ci===4,color:{rgb:ci===4?'166534':'1E293B'}},fill:{patternType:'solid',fgColor:{rgb:ci===4?'DCFCE7':bg}},alignment:{horizontal:['center','left','center','left','left','center'][ci],vertical:'center'},border:borderStyle};
+            });
+        });
+        const sr=aoa.length;
+        if(ws['A'+sr]) ws['A'+sr].s={font:{name:'Arial',bold:true,sz:11,color:{rgb:'FFFFFF'}},fill:{patternType:'solid',fgColor:{rgb:'1E3A5F'}},alignment:{horizontal:'right',vertical:'center'},border:borderStyle};
+        if(ws['F'+sr]) ws['F'+sr].s={font:{name:'Arial',bold:true,sz:12,color:{rgb:'FFFFFF'}},fill:{patternType:'solid',fgColor:{rgb:'2563EB'}},alignment:{horizontal:'center',vertical:'center'},border:borderStyle};
+        XLSX.utils.book_append_sheet(wb, ws, 'Rekap KP');
+        XLSX.writeFile(wb, `Rekap-KP-${monthVal}.xlsx`);
+    } catch(e) { toast(e.message,'error'); }
+}
+
+// ── ADMIN DASHBOARD ───────────────────────────────────────
+function showAdminDashboard() {
+    event?.preventDefault();
+    if (!currentUser) { showLoginModal(); return; }
+    document.getElementById('adminModal').classList.add('active');
+    const roleName   = currentUser.role==='admin_pengelola'?'Admin Pengelola':'Admin Kepegawaian';
+    const badgeClass = currentUser.role==='admin_pengelola'?'pengelola':'kepegawaian';
+    document.getElementById('adminRoleBadge').innerHTML = `<span class="admin-badge ${badgeClass}">${roleName}</span>`;
+    showAdminTab('scrolling');
+}
+
+function showAdminTab(tab) {
+    document.querySelectorAll('.admin-tab').forEach(b => { b.classList.remove('text-blue-600','border-b-4','border-blue-600'); b.classList.add('text-gray-600'); });
+    event?.target?.classList.add('text-blue-600','border-b-4','border-blue-600');
+    event?.target?.classList.remove('text-gray-600');
+    const c = document.getElementById('adminTabContent');
+    switch(tab) {
+        case 'scrolling': renderAdminScrolling(); break;
+        case 'pengumuman': renderAdminPengumuman(); break;
+        case 'gallery': renderAdminGallery(); break;
+        case 'tim': renderAdminTim(); break;
+        case 'faq': renderAdminFAQ(); break;
+        case 'kp': renderAdminKP(); break;
+    }
+}
+
+async function renderAdminScrolling() {
+    const c = document.getElementById('adminTabContent');
+    c.innerHTML = `<div class="space-y-4"><h3 class="font-bold text-xl">Edit Scrolling Text</h3><textarea id="scrollingInput" class="w-full p-4 border-2 border-gray-300 rounded-lg" rows="3"></textarea><button onclick="saveScrolling()" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-semibold">💾 Update</button></div>`;
+    try { const d=await api('settings'); document.getElementById('scrollingInput').value=d.scrolling_text; } catch(e){}
+}
+async function saveScrolling() {
+    try {
+        await api('settings','PUT',{scrolling_text:document.getElementById('scrollingInput').value});
+        document.getElementById('scrollingText').textContent = document.getElementById('scrollingInput').value;
+        toast('✅ Scrolling text diupdate!');
+    } catch(e) { toast(e.message,'error'); }
+}
+
+async function renderAdminPengumuman() {
+    const data = await api('pengumuman');
+    document.getElementById('adminTabContent').innerHTML = `
+        <div class="space-y-6">
+            <div class="bg-blue-50 p-6 rounded-xl border-2 border-blue-200">
+                <h3 class="font-bold text-xl mb-4">➕ Tambah Pengumuman</h3>
+                <input id="pTitle" type="text" placeholder="Judul" class="w-full p-3 border-2 border-gray-300 rounded-lg mb-3">
+                <textarea id="pContent" placeholder="Isi" class="w-full p-3 border-2 border-gray-300 rounded-lg mb-3" rows="3"></textarea>
+                <button onclick="addPengumuman()" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-semibold">💾 Tambah</button>
+            </div>
+            <div class="space-y-3">
+                ${data.map(item => `<div class="border-2 border-gray-200 p-5 rounded-xl bg-white flex justify-between items-start">
+                    <div><h4 class="font-bold">${item.title}</h4><p class="text-gray-600 mt-1">${item.content}</p><p class="text-sm text-gray-400 mt-1">${item.date}</p></div>
+                    <button onclick="delPengumuman(${item.id})" class="text-red-600 hover:bg-red-50 p-2 rounded-lg ml-4">🗑️</button>
+                </div>`).join('')}
+            </div>
+        </div>`;
+}
+async function addPengumuman() {
+    const title=document.getElementById('pTitle').value, content=document.getElementById('pContent').value;
+    if(!title||!content){toast('Isi semua field!','error');return;}
+    try { await api('pengumuman','POST',{title,content}); toast('✅ Pengumuman ditambahkan!'); loadPengumuman(); renderAdminPengumuman(); }
+    catch(e){toast(e.message,'error');}
+}
+async function delPengumuman(id) {
+    try { await api('pengumuman','DELETE',{id}); toast('Pengumuman dihapus'); loadPengumuman(); renderAdminPengumuman(); }
+    catch(e){toast(e.message,'error');}
+}
+
+async function renderAdminGallery() {
+    const data = await api('gallery');
+    document.getElementById('adminTabContent').innerHTML = `
+        <div class="space-y-6">
+            <div class="bg-purple-50 p-6 rounded-xl border-2 border-purple-200">
+                <h3 class="font-bold text-xl mb-4">🖼️ Tambah Foto Gallery</h3>
+                <input id="gTitle" type="text" placeholder="Judul foto" class="w-full p-3 border-2 border-gray-300 rounded-lg mb-3">
+                <input id="gFile" type="file" accept="image/*" class="w-full p-3 border-2 border-gray-300 rounded-lg mb-3">
+                <div id="gPreview" class="mb-3"></div>
+                <button onclick="addGallery()" class="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 font-semibold">💾 Upload</button>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                ${data.map(item=>`<div class="border-2 border-gray-200 rounded-xl overflow-hidden bg-white">
+                    <img src="../${item.image_path}" class="w-full h-32 object-cover">
+                    <div class="p-3"><p class="font-semibold text-sm">${item.title}</p><button onclick="delGallery(${item.id})" class="text-red-600 text-sm mt-1 hover:underline">🗑️ Hapus</button></div>
+                </div>`).join('')}
+            </div>
+        </div>`;
+    document.getElementById('gFile').addEventListener('change', function(){
+        const f=this.files[0]; if(!f)return;
+        const r=new FileReader(); r.onload=e=>{document.getElementById('gPreview').innerHTML=`<img src="${e.target.result}" class="max-w-xs max-h-40 rounded-lg border">`;}; r.readAsDataURL(f);
+    });
+}
+async function addGallery() {
+    const title=document.getElementById('gTitle').value, file=document.getElementById('gFile').files[0];
+    if(!title||!file){toast('Isi judul dan pilih foto!','error');return;}
+    const r=new FileReader();
+    r.onload=async e=>{
+        try { await api('gallery','POST',{title,image:e.target.result}); toast('✅ Foto ditambahkan!'); loadGallery(); renderAdminGallery(); }
+        catch(err){toast(err.message,'error');}
+    }; r.readAsDataURL(file);
+}
+async function delGallery(id) {
+    try { await api('gallery','DELETE',{id}); toast('Foto dihapus'); loadGallery(); renderAdminGallery(); }
+    catch(e){toast(e.message,'error');}
+}
+
+async function renderAdminTim() {
+    const data = await api('tim_kerja');
+    document.getElementById('adminTabContent').innerHTML = `
+        <div class="space-y-6">
+            <div class="bg-green-50 p-6 rounded-xl border-2 border-green-200">
+                <h3 class="font-bold text-xl mb-4">👥 Tambah Anggota Tim</h3>
+                <input id="tName" type="text" placeholder="Nama" class="w-full p-3 border-2 border-gray-300 rounded-lg mb-3">
+                <input id="tPos" type="text" placeholder="Jabatan" class="w-full p-3 border-2 border-gray-300 rounded-lg mb-3">
+                <input id="tPhone" type="text" placeholder="No. HP" class="w-full p-3 border-2 border-gray-300 rounded-lg mb-3">
+                <input id="tPhoto" type="file" accept="image/*" class="w-full p-3 border-2 border-gray-300 rounded-lg mb-3">
+                <div id="tPreview" class="mb-3"></div>
+                <button onclick="addTim()" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 font-semibold">💾 Tambah</button>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                ${data.map(m=>`<div class="border-2 border-gray-200 rounded-xl p-4 bg-white text-center">
+                    <img src="../${m.photo_path}" class="w-20 h-20 rounded-full mx-auto mb-2 object-cover">
+                    <p class="font-bold">${m.name}</p><p class="text-sm text-gray-600">${m.position}</p>
+                    <button onclick="delTim(${m.id})" class="text-red-600 text-sm mt-2 hover:underline">🗑️ Hapus</button>
+                </div>`).join('')}
+            </div>
+        </div>`;
+    document.getElementById('tPhoto').addEventListener('change',function(){
+        const f=this.files[0];if(!f)return;
+        const r=new FileReader();r.onload=e=>{document.getElementById('tPreview').innerHTML=`<img src="${e.target.result}" class="w-20 h-20 rounded-full border-2">`};r.readAsDataURL(f);
+    });
+}
+async function addTim() {
+    const name=document.getElementById('tName').value,pos=document.getElementById('tPos').value,phone=document.getElementById('tPhone').value,file=document.getElementById('tPhoto').files[0];
+    if(!name||!pos||!phone||!file){toast('Isi semua field!','error');return;}
+    const r=new FileReader();
+    r.onload=async e=>{
+        try { await api('tim_kerja','POST',{name,position:pos,phone,photo:e.target.result}); toast('✅ Anggota ditambahkan!'); loadTimKerja(); renderAdminTim(); }
+        catch(err){toast(err.message,'error');}
+    }; r.readAsDataURL(file);
+}
+async function delTim(id) {
+    try { await api('tim_kerja','DELETE',{id}); toast('Anggota dihapus'); loadTimKerja(); renderAdminTim(); }
+    catch(e){toast(e.message,'error');}
+}
+
+async function renderAdminFAQ() {
+    const data = await api('faq');
+    document.getElementById('adminTabContent').innerHTML = `
+        <div class="space-y-4">
+            <h3 class="font-bold text-xl">💬 Kelola FAQ</h3>
+            ${data.map(item=>`<div class="border-2 border-gray-200 rounded-xl p-5 bg-white">
+                <h4 class="font-bold mb-3">❓ ${item.question}</h4>
+                <textarea id="fAns${item.id}" class="w-full p-3 border-2 border-gray-300 rounded-lg mb-3" rows="2" placeholder="Jawaban...">${item.answer||''}</textarea>
+                <div class="flex gap-2">
+                    <button onclick="answerFAQ(${item.id})" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 font-semibold text-sm">${item.answer?'✏️ Update':'💾 Jawab'}</button>
+                    <button onclick="delFAQ(${item.id})" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 font-semibold text-sm">🗑️ Hapus</button>
+                </div>
+            </div>`).join('')}
+        </div>`;
+}
+async function answerFAQ(id) {
+    const answer=document.getElementById('fAns'+id).value;
+    if(!answer){toast('Isi jawaban!','error');return;}
+    try { await api('faq','PUT',{id,answer}); toast('✅ Jawaban disimpan!'); renderAdminFAQ(); loadFAQ(); }
+    catch(e){toast(e.message,'error');}
+}
+async function delFAQ(id) {
+    try { await api('faq','DELETE',{id}); toast('FAQ dihapus'); renderAdminFAQ(); loadFAQ(); }
+    catch(e){toast(e.message,'error');}
+}
+
+async function renderAdminKP() {
+    document.getElementById('adminTabContent').innerHTML = `
+        <div class="space-y-6">
+            <div class="bg-indigo-50 p-6 rounded-xl border-2 border-indigo-200">
+                <h4 class="font-bold text-lg mb-4">📅 Tambah Link Periode KP</h4>
+                <input id="kpPMonth" type="month" class="w-full p-3 border-2 border-gray-300 rounded-lg mb-3">
+                <input id="kpPLink" type="text" placeholder="URL Link" class="w-full p-3 border-2 border-gray-300 rounded-lg mb-3">
+                <button onclick="addKPPeriod()" class="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 font-semibold">💾 Tambah</button>
+            </div>
+            <div class="bg-blue-50 p-6 rounded-xl border-2 border-blue-200">
+                <h4 class="font-bold text-lg mb-4">👥 Tambah Data Pegawai KP</h4>
+                <select id="kpDMonth" class="w-full p-3 border-2 border-gray-300 rounded-lg mb-3">
+                    <option value="2024-01">Januari 2024</option>
+                    <option value="2024-02">Februari 2024</option>
+                    <option value="2024-03">Maret 2024</option>
+                </select>
+                <input id="kpDName" type="text" placeholder="Nama Pegawai" class="w-full p-3 border-2 border-gray-300 rounded-lg mb-3">
+                <input id="kpDNIP" type="text" placeholder="NIP" class="w-full p-3 border-2 border-gray-300 rounded-lg mb-3">
+                <input id="kpDOld" type="text" placeholder="Pangkat Lama" class="w-full p-3 border-2 border-gray-300 rounded-lg mb-3">
+                <input id="kpDNew" type="text" placeholder="Pangkat Baru" class="w-full p-3 border-2 border-gray-300 rounded-lg mb-3">
+                <button onclick="addKPData()" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-semibold">💾 Tambah Data</button>
+            </div>
+        </div>`;
+}
+async function addKPPeriod() {
+    const month=document.getElementById('kpPMonth').value, link=document.getElementById('kpPLink').value;
+    if(!month||!link){toast('Isi semua field!','error');return;}
+    try { await api('kp_periods','POST',{month,link}); toast('✅ Periode ditambahkan!'); loadKPPeriods(); }
+    catch(e){toast(e.message,'error');}
+}
+async function addKPData() {
+    const month=document.getElementById('kpDMonth').value, name=document.getElementById('kpDName').value,
+          nip=document.getElementById('kpDNIP').value, old_rank=document.getElementById('kpDOld').value, new_rank=document.getElementById('kpDNew').value;
+    if(!name||!nip||!old_rank||!new_rank){toast('Isi semua field!','error');return;}
+    try {
+        await api('kp_data','POST',{month,name,nip,old_rank,new_rank});
+        toast('✅ Data KP ditambahkan!');
+        ['kpDName','kpDNIP','kpDOld','kpDNew'].forEach(id=>document.getElementById(id).value='');
+        loadKPRecap();
+    } catch(e){toast(e.message,'error');}
+}
+
+window.onload = init;
+</script>
+</body>
+</html>
