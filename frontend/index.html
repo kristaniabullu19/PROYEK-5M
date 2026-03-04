@@ -68,6 +68,89 @@
         .month-pill.active { background:#4f46e5; color:white; border-color:#4f46e5; }
         .progress-bar { height:6px; border-radius:3px; background:#e5e7eb; overflow:hidden; }
         .progress-fill { height:100%; border-radius:3px; background:linear-gradient(90deg,#6366f1,#8b5cf6); transition:width 0.5s ease; }
+
+        /* KP Requirements List Styles */
+        .kp-req-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 14px 18px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #f8faff 0%, #f0f4ff 100%);
+            border: 1.5px solid #e0e8ff;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+        .kp-req-item:hover {
+            border-color: #a5b4fc;
+            box-shadow: 0 4px 16px rgba(99,102,241,0.1);
+            transform: translateX(4px);
+        }
+        .kp-req-num {
+            min-width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 3px 8px rgba(79,70,229,0.3);
+        }
+        .kp-req-item.has-sub { background: linear-gradient(135deg, #fafffe 0%, #f0fdf8 100%); border-color: #d1fae5; }
+        .kp-req-item.has-sub:hover { border-color: #6ee7b7; box-shadow: 0 4px 16px rgba(16,185,129,0.1); }
+        .kp-req-item.has-sub .kp-req-num { background: linear-gradient(135deg, #059669, #0d9488); }
+        .kp-req-sub {
+            margin-top: 10px;
+            padding-left: 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .kp-req-sub-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #d1fae5;
+            font-size: 13.5px;
+            color: #374151;
+        }
+        .kp-req-sub-item::before {
+            content: '→';
+            color: #059669;
+            font-weight: 700;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+        .kp-req-note {
+            margin-top: 6px;
+            font-size: 12px;
+            color: #6b7280;
+            font-style: italic;
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 6px;
+            padding: 5px 10px;
+            display: inline-block;
+        }
+        .kp-req-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            background: #e0e7ff;
+            color: #4338ca;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -113,7 +196,6 @@
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
           <span>Kenaikan Pangkat</span>
         </a>
-        <!-- ★ NEW: Kenaikan Gaji Berkala -->
         <a href="#" onclick="showSection('kgb')" class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
           <span>Kenaikan Gaji Berkala</span>
@@ -143,6 +225,10 @@
           <span>Tugas Belajar</span>
         </a>
         <div class="pt-4 pb-2"><h3 class="text-xs font-semibold text-gray-400 uppercase px-3">Informasi</h3></div>
+        <a href="#" onclick="showSection('peraturan')" class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+          <span>Peraturan</span>
+        </a>
         <a href="#" onclick="showSection('gallery')" class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
           <span>Galeri SDM</span>
@@ -195,10 +281,30 @@
     <!-- KENAIKAN PANGKAT -->
     <div id="kenaikanPangkatSection" class="content-section hidden">
       <div class="mb-6"><h1 class="text-3xl font-bold text-gray-800">Kenaikan Pangkat</h1><p class="text-gray-600 mt-2">Informasi, persyaratan, jadwal, dan rekap kenaikan pangkat pegawai</p></div>
+
+      <!-- ── PERSYARATAN DOKUMEN KP (New: Text List) ── -->
       <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
-        <div class="flex items-center gap-3 mb-5"><span class="bg-blue-100 text-blue-700 rounded-xl p-2"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></span><h3 class="font-bold text-xl text-gray-800">Dokumen Persyaratan Kenaikan Pangkat</h3></div>
-        <div id="dokumenPersyaratanList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"><div class="col-span-full text-center py-8"><div class="spinner mx-auto"></div></div></div>
+        <div class="flex items-center gap-3 mb-2">
+          <span class="bg-blue-100 text-blue-700 rounded-xl p-2">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+          </span>
+          <div>
+            <h3 class="font-bold text-xl text-gray-800">Persyaratan Dokumen Kenaikan Pangkat</h3>
+            <p class="text-sm text-gray-500">Dokumen yang wajib dilengkapi saat pengajuan kenaikan pangkat</p>
+          </div>
+        </div>
+
+        <!-- Info banner -->
+        <div class="flex items-start gap-3 bg-blue-50 border border-blue-200 rounded-xl p-4 mb-5 mt-4">
+          <svg class="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <p class="text-sm text-blue-700">Pastikan seluruh dokumen di bawah ini sudah disiapkan dan dalam kondisi lengkap sebelum mengajukan kenaikan pangkat.</p>
+        </div>
+
+        <div id="dokumenPersyaratanList" class="space-y-3">
+          <div class="text-center py-8"><div class="spinner mx-auto"></div></div>
+        </div>
       </div>
+
       <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
         <div class="flex items-center gap-3 mb-5"><span class="bg-green-100 text-green-700 rounded-xl p-2"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></span><h3 class="font-bold text-xl text-gray-800">Jadwal Periode Kenaikan Pangkat</h3></div>
         <div id="jadwalKPList" class="space-y-3"><div class="text-center py-8"><div class="spinner mx-auto"></div></div></div>
@@ -220,6 +326,12 @@
           </div>
           <div class="chart-container bg-white rounded-xl p-4 shadow-sm"><canvas id="kpChart"></canvas></div>
         </div>
+        <div class="flex items-center gap-3 mb-4">
+          <span class="bg-blue-100 text-blue-700 rounded-xl p-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          </span>
+          <h3 class="font-bold text-lg text-gray-800">Daftar Pegawai Yang Akan Naik Pangkat</h3>
+        </div>
         <div class="overflow-x-auto">
           <table class="w-full border-collapse">
             <thead><tr class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white"><th class="p-3 text-left">No</th><th class="p-3 text-left">Nama Pegawai</th><th class="p-3 text-left">NIP</th><th class="p-3 text-left">Pangkat Lama</th><th class="p-3 text-left">Pangkat Baru</th><th class="p-3 text-left">Tanggal Usulan</th><th class="p-3 text-left">Link Upload</th></tr></thead>
@@ -229,9 +341,7 @@
       </div>
     </div>
 
-    <!-- ══════════════════════════════════════════════ -->
-    <!-- KENAIKAN GAJI BERKALA (KGB) - NEW SECTION     -->
-    <!-- ══════════════════════════════════════════════ -->
+    <!-- KGB section (unchanged) -->
     <div id="kgbSection" class="content-section hidden">
       <div class="mb-6">
         <h1 class="text-3xl font-bold text-gray-800 flex items-center gap-3">
@@ -242,26 +352,15 @@
         </h1>
         <p class="text-gray-600 mt-2 ml-14">Rekap pegawai Kenaikan Gaji Berkala per Kabupaten/Kota dan per Bulan</p>
       </div>
-
-      <!-- Tab: Upload vs Dashboard -->
       <div class="flex gap-1 mb-6 bg-gray-100 p-1 rounded-xl w-fit">
-        <button id="kgbTabUpload" onclick="switchKGBTab('upload')" class="px-5 py-2.5 rounded-lg font-semibold text-sm bg-white shadow text-indigo-700 transition-all">
-          📤 Upload Data
-        </button>
-        <button id="kgbTabDashboard" onclick="switchKGBTab('dashboard')" class="px-5 py-2.5 rounded-lg font-semibold text-sm text-gray-500 transition-all hover:bg-white">
-          📊 Dashboard Rekap
-        </button>
+        <button id="kgbTabUpload" onclick="switchKGBTab('upload')" class="px-5 py-2.5 rounded-lg font-semibold text-sm bg-white shadow text-indigo-700 transition-all">📤 Upload Data</button>
+        <button id="kgbTabDashboard" onclick="switchKGBTab('dashboard')" class="px-5 py-2.5 rounded-lg font-semibold text-sm text-gray-500 transition-all hover:bg-white">📊 Dashboard Rekap</button>
       </div>
-
-      <!-- ── UPLOAD TAB ── -->
       <div id="kgbUploadPanel">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <!-- Upload Form -->
           <div class="bg-white rounded-2xl shadow-lg p-6">
             <h3 class="font-bold text-lg text-gray-800 mb-1">Upload Data KGB</h3>
             <p class="text-sm text-gray-500 mb-5">Unggah file Excel (.xlsx/.xls) dengan format yang telah ditentukan</p>
-
-            <!-- Kabupaten/Kota Selector -->
             <div class="mb-4">
               <label class="block text-sm font-semibold text-gray-700 mb-2">Kabupaten / Kota *</label>
               <select id="kgbKabKota" class="w-full p-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-400 bg-white font-medium">
@@ -284,43 +383,21 @@
                 <option value="Kab. Kepulauan Siau Tagulandang Biaro">Kab. Kepulauan Siau Tagulandang Biaro</option>
               </select>
             </div>
-
-            <!-- Bulan Selector -->
             <div class="mb-5">
               <label class="block text-sm font-semibold text-gray-700 mb-2">Bulan KGB *</label>
               <select id="kgbBulan" class="w-full p-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-400 bg-white font-medium">
                 <option value="">-- Pilih Bulan --</option>
-                <option value="Januari 2026">Januari 2026</option>
-                <option value="Februari 2026">Februari 2026</option>
-                <option value="Maret 2026">Maret 2026</option>
-                <option value="April 2026">April 2026</option>
-                <option value="Mei 2026">Mei 2026</option>
-                <option value="Juni 2026">Juni 2026</option>
-                <option value="Juli 2026">Juli 2026</option>
-                <option value="Agustus 2026">Agustus 2026</option>
-                <option value="September 2026">September 2026</option>
-                <option value="Oktober 2026">Oktober 2026</option>
-                <option value="November 2026">November 2026</option>
-                <option value="Desember 2026">Desember 2026</option>
+                <option value="Januari 2026">Januari 2026</option><option value="Februari 2026">Februari 2026</option><option value="Maret 2026">Maret 2026</option><option value="April 2026">April 2026</option><option value="Mei 2026">Mei 2026</option><option value="Juni 2026">Juni 2026</option><option value="Juli 2026">Juli 2026</option><option value="Agustus 2026">Agustus 2026</option><option value="September 2026">September 2026</option><option value="Oktober 2026">Oktober 2026</option><option value="November 2026">November 2026</option><option value="Desember 2026">Desember 2026</option>
               </select>
             </div>
-
-            <!-- Drop Zone -->
-            <div id="kgbDropZone" class="kgb-upload-zone p-8 text-center mb-4" 
-                 onclick="document.getElementById('kgbFileInput').click()"
-                 ondragover="kgbDragOver(event)" ondragleave="kgbDragLeave(event)" ondrop="kgbDrop(event)">
+            <div id="kgbDropZone" class="kgb-upload-zone p-8 text-center mb-4" onclick="document.getElementById('kgbFileInput').click()" ondragover="kgbDragOver(event)" ondragleave="kgbDragLeave(event)" ondrop="kgbDrop(event)">
               <div class="text-5xl mb-3">📊</div>
               <p class="font-bold text-gray-700 text-lg">Klik atau Seret File Excel</p>
               <p class="text-sm text-gray-500 mt-1">.xlsx atau .xls — maks. 5MB</p>
               <p id="kgbFileName" class="mt-3 text-indigo-600 font-semibold text-sm hidden"></p>
             </div>
             <input type="file" id="kgbFileInput" accept=".xlsx,.xls" class="hidden" onchange="handleKGBFile(this.files[0])">
-
-            <button onclick="processKGBUpload()" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 rounded-xl font-bold text-base shadow-lg hover:opacity-90 transition">
-              ✅ Proses & Simpan ke Dashboard
-            </button>
-
-            <!-- Preview setelah baca Excel -->
+            <button onclick="processKGBUpload()" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 rounded-xl font-bold text-base shadow-lg hover:opacity-90 transition">✅ Proses & Simpan ke Dashboard</button>
             <div id="kgbPreviewWrap" class="hidden mt-5">
               <div class="flex items-center justify-between mb-2">
                 <p class="font-semibold text-gray-700">Preview Data (<span id="kgbPreviewCount">0</span> pegawai)</p>
@@ -334,12 +411,9 @@
               </div>
             </div>
           </div>
-
-          <!-- Format Panduan -->
           <div class="bg-white rounded-2xl shadow-lg p-6">
             <h3 class="font-bold text-lg text-gray-800 mb-1">Panduan Format Excel</h3>
             <p class="text-sm text-gray-500 mb-5">Pastikan file Excel sesuai format berikut agar dapat dibaca sistem</p>
-
             <div class="bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200 rounded-2xl p-5 mb-5">
               <p class="font-bold text-amber-800 mb-3 flex items-center gap-2">⚠️ Ketentuan Format</p>
               <ul class="space-y-2 text-sm text-amber-900">
@@ -347,11 +421,8 @@
                 <li class="flex items-start gap-2"><span class="text-amber-500 font-bold mt-0.5">•</span><span>Kolom <strong>A</strong> = Nomor urut (angka)</span></li>
                 <li class="flex items-start gap-2"><span class="text-amber-500 font-bold mt-0.5">•</span><span>Kolom <strong>B</strong> = Nama Pegawai (teks)</span></li>
                 <li class="flex items-start gap-2"><span class="text-amber-500 font-bold mt-0.5">•</span><span>Data dimulai dari baris <strong>ke-2</strong></span></li>
-                <li class="flex items-start gap-2"><span class="text-amber-500 font-bold mt-0.5">•</span><span>Tidak ada kolom tambahan yang diperlukan</span></li>
               </ul>
             </div>
-
-            <!-- Simulasi tabel Excel -->
             <p class="text-xs font-semibold text-gray-500 uppercase mb-2">Contoh Tampilan Excel</p>
             <div class="border-2 border-gray-200 rounded-xl overflow-hidden mb-5">
               <table class="w-full text-sm">
@@ -364,8 +435,6 @@
                 </tbody>
               </table>
             </div>
-
-            <!-- Download Template Button -->
             <button onclick="downloadKGBTemplate()" class="w-full flex items-center justify-center gap-2 bg-white border-2 border-indigo-300 text-indigo-700 py-3 rounded-xl font-bold hover:bg-indigo-50 transition">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
               Unduh Template Excel
@@ -373,63 +442,26 @@
           </div>
         </div>
       </div>
-
-      <!-- ── DASHBOARD TAB ── -->
       <div id="kgbDashboardPanel" class="hidden">
-        <!-- Summary Stats Cards -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <div class="bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-2xl p-5 text-white shadow-lg">
-            <p class="text-3xl font-bold" id="kgbStatTotal">0</p>
-            <p class="text-indigo-200 text-sm mt-1">Total Seluruh Pegawai</p>
-          </div>
-          <div class="bg-gradient-to-br from-purple-500 to-purple-700 rounded-2xl p-5 text-white shadow-lg">
-            <p class="text-3xl font-bold" id="kgbStatKabkota">0</p>
-            <p class="text-purple-200 text-sm mt-1">Kab/Kota Melapor</p>
-          </div>
-          <div class="bg-gradient-to-br from-sky-500 to-sky-700 rounded-2xl p-5 text-white shadow-lg">
-            <p class="text-3xl font-bold" id="kgbStatBulan">0</p>
-            <p class="text-sky-200 text-sm mt-1">Bulan Tersedia</p>
-          </div>
-          <div class="bg-gradient-to-br from-teal-500 to-teal-700 rounded-2xl p-5 text-white shadow-lg">
-            <p class="text-3xl font-bold" id="kgbStatAvg">0</p>
-            <p class="text-teal-200 text-sm mt-1">Rata-rata per Kab/Kota</p>
-          </div>
+          <div class="bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-2xl p-5 text-white shadow-lg"><p class="text-3xl font-bold" id="kgbStatTotal">0</p><p class="text-indigo-200 text-sm mt-1">Total Seluruh Pegawai</p></div>
+          <div class="bg-gradient-to-br from-purple-500 to-purple-700 rounded-2xl p-5 text-white shadow-lg"><p class="text-3xl font-bold" id="kgbStatKabkota">0</p><p class="text-purple-200 text-sm mt-1">Kab/Kota Melapor</p></div>
+          <div class="bg-gradient-to-br from-sky-500 to-sky-700 rounded-2xl p-5 text-white shadow-lg"><p class="text-3xl font-bold" id="kgbStatBulan">0</p><p class="text-sky-200 text-sm mt-1">Bulan Tersedia</p></div>
+          <div class="bg-gradient-to-br from-teal-500 to-teal-700 rounded-2xl p-5 text-white shadow-lg"><p class="text-3xl font-bold" id="kgbStatAvg">0</p><p class="text-teal-200 text-sm mt-1">Rata-rata per Kab/Kota</p></div>
         </div>
-
-        <!-- Filter Row -->
         <div class="bg-white rounded-2xl shadow-lg p-5 mb-6">
           <div class="flex flex-wrap gap-4 items-end">
-            <div class="flex-1 min-w-48">
-              <label class="block text-xs font-semibold text-gray-500 uppercase mb-2">Filter Bulan</label>
-              <select id="kgbFilterBulan" onchange="renderKGBDashboard()" class="w-full p-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-400 bg-white font-medium">
-                <option value="">Semua Bulan</option>
-              </select>
-            </div>
-            <div class="flex-1 min-w-48">
-              <label class="block text-xs font-semibold text-gray-500 uppercase mb-2">Filter Kab/Kota</label>
-              <select id="kgbFilterKabkota" onchange="renderKGBDashboard()" class="w-full p-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-400 bg-white font-medium">
-                <option value="">Semua Kab/Kota</option>
-              </select>
-            </div>
-            <div class="flex-1 min-w-48">
-              <label class="block text-xs font-semibold text-gray-500 uppercase mb-2">Cari Nama</label>
-              <input type="text" id="kgbSearch" oninput="renderKGBDashboard()" placeholder="Ketik nama pegawai..." class="w-full p-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-400">
-            </div>
-            <button onclick="exportKGBToExcel()" class="bg-green-600 text-white px-5 py-3 rounded-xl font-bold hover:bg-green-700 transition shadow flex items-center gap-2">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-              Export Excel
-            </button>
+            <div class="flex-1 min-w-48"><label class="block text-xs font-semibold text-gray-500 uppercase mb-2">Filter Bulan</label><select id="kgbFilterBulan" onchange="renderKGBDashboard()" class="w-full p-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-400 bg-white font-medium"><option value="">Semua Bulan</option></select></div>
+            <div class="flex-1 min-w-48"><label class="block text-xs font-semibold text-gray-500 uppercase mb-2">Filter Kab/Kota</label><select id="kgbFilterKabkota" onchange="renderKGBDashboard()" class="w-full p-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-400 bg-white font-medium"><option value="">Semua Kab/Kota</option></select></div>
+            <div class="flex-1 min-w-48"><label class="block text-xs font-semibold text-gray-500 uppercase mb-2">Cari Nama</label><input type="text" id="kgbSearch" oninput="renderKGBDashboard()" placeholder="Ketik nama pegawai..." class="w-full p-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-400"></div>
+            <button onclick="exportKGBToExcel()" class="bg-green-600 text-white px-5 py-3 rounded-xl font-bold hover:bg-green-700 transition shadow flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>Export Excel</button>
             <button onclick="clearKGBFilter()" class="bg-gray-100 text-gray-600 px-5 py-3 rounded-xl font-semibold hover:bg-gray-200 transition">Reset</button>
           </div>
         </div>
-
-        <!-- Kabupaten/Kota Pills (quick filter) -->
         <div class="bg-white rounded-2xl shadow-lg p-5 mb-6">
           <p class="text-xs font-bold text-gray-500 uppercase mb-3">Rekap per Kabupaten/Kota</p>
           <div id="kgbKabkotaPills" class="flex flex-wrap gap-2"></div>
         </div>
-
-        <!-- Main Table -->
         <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
           <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
             <h3 class="font-bold text-lg text-gray-800">Daftar Pegawai KGB</h3>
@@ -437,27 +469,13 @@
           </div>
           <div class="overflow-x-auto">
             <table class="w-full border-collapse">
-              <thead>
-                <tr class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm">
-                  <th class="p-3 text-center w-12">No</th>
-                  <th class="p-3 text-left sort-btn" onclick="sortKGBTable('nama')" id="kgbSortNama">Nama Pegawai</th>
-                  <th class="p-3 text-left sort-btn" onclick="sortKGBTable('kabkota')" id="kgbSortKabkota">Kab/Kota</th>
-                  <th class="p-3 text-left sort-btn" onclick="sortKGBTable('bulan')" id="kgbSortBulan">Bulan KGB</th>
-                </tr>
-              </thead>
-              <tbody id="kgbTableBody" class="divide-y divide-gray-100 text-sm">
-                <tr><td colspan="5" class="text-center py-16 text-gray-400">
-                  <div class="text-5xl mb-3">📭</div>
-                  <p class="font-semibold text-lg">Belum ada data</p>
-                  <p class="text-sm">Upload file Excel dari tab "Upload Data"</p>
-                </td></tr>
-              </tbody>
+              <thead><tr class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm"><th class="p-3 text-center w-12">No</th><th class="p-3 text-left sort-btn" onclick="sortKGBTable('nama')" id="kgbSortNama">Nama Pegawai</th><th class="p-3 text-left sort-btn" onclick="sortKGBTable('kabkota')" id="kgbSortKabkota">Kab/Kota</th><th class="p-3 text-left sort-btn" onclick="sortKGBTable('bulan')" id="kgbSortBulan">Bulan KGB</th></tr></thead>
+              <tbody id="kgbTableBody" class="divide-y divide-gray-100 text-sm"><tr><td colspan="5" class="text-center py-16 text-gray-400"><div class="text-5xl mb-3">📭</div><p class="font-semibold text-lg">Belum ada data</p><p class="text-sm">Upload file Excel dari tab "Upload Data"</p></td></tr></tbody>
             </table>
           </div>
         </div>
       </div>
     </div>
-    <!-- END KGB -->
 
     <!-- UJI KOMPETENSI -->
     <div id="ujiKompetensiSection" class="content-section hidden">
@@ -488,6 +506,28 @@
       <div class="mb-6"><h1 class="text-3xl font-bold text-gray-800">Tugas Belajar</h1></div>
       <div class="bg-white rounded-xl shadow-lg p-6 mb-6"><div class="flex items-center gap-3 mb-5"><span class="bg-blue-100 text-blue-700 rounded-xl p-2"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></span><h3 class="font-bold text-xl text-gray-800">Persyaratan Tugas Belajar</h3></div><div id="tbPersyaratanList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"><div class="col-span-full text-center py-8 text-gray-400"><p class="font-semibold">Belum ada dokumen persyaratan</p></div></div></div>
       <div class="bg-white rounded-xl shadow-lg p-6"><div class="flex items-center gap-3 mb-5"><span class="bg-purple-100 text-purple-700 rounded-xl p-2"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg></span><h3 class="font-bold text-xl text-gray-800">Dokumen Persyaratan Tugas Belajar</h3></div><div id="tbDokumenList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"><div class="col-span-full text-center py-8 text-gray-400"><p class="font-semibold">Belum ada dokumen</p></div></div></div>
+    </div>
+
+    <!-- PERATURAN SECTION -->
+    <div id="peraturanSection" class="content-section hidden">
+      <div class="mb-6">
+        <h1 class="text-3xl font-bold text-gray-800">Peraturan</h1>
+        <p class="text-gray-600 mt-2">Kumpulan peraturan kepegawaian yang berlaku</p>
+      </div>
+      <div class="bg-white rounded-xl shadow-lg p-4 mb-6">
+        <div class="flex flex-col sm:flex-row gap-3">
+          <div class="relative flex-1">
+            <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <input id="peraturanSearch" type="text" placeholder="Cari peraturan..." oninput="filterPeraturan()" class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+          </div>
+          <select id="peraturanKategori" onchange="filterPeraturan()" class="p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white text-gray-700 min-w-[160px]">
+            <option value="">Semua Kategori</option>
+          </select>
+        </div>
+      </div>
+      <div id="peraturanList" class="space-y-3">
+        <div class="text-center py-8"><div class="spinner mx-auto"></div></div>
+      </div>
     </div>
 
     <!-- GALLERY -->
@@ -569,6 +609,7 @@
         <button onclick="showAdminTab('scrolling')" class="admin-tab px-4 py-2.5 font-semibold text-blue-600 border-b-4 border-blue-600 rounded-t-lg text-sm">Scrolling</button>
         <button onclick="showAdminTab('pengumuman')" class="admin-tab px-4 py-2.5 font-semibold text-gray-600 hover:text-blue-600 rounded-t-lg text-sm">Pengumuman</button>
         <button onclick="showAdminTab('gallery')" class="admin-tab px-4 py-2.5 font-semibold text-gray-600 hover:text-blue-600 rounded-t-lg text-sm">Gallery</button>
+        <button onclick="showAdminTab('peraturan')" class="admin-tab px-4 py-2.5 font-semibold text-gray-600 hover:text-blue-600 rounded-t-lg text-sm">Peraturan</button>
         <button onclick="showAdminTab('tim')" class="admin-tab px-4 py-2.5 font-semibold text-gray-600 hover:text-blue-600 rounded-t-lg text-sm">Tim Kerja</button>
         <button onclick="showAdminTab('faq')" class="admin-tab px-4 py-2.5 font-semibold text-gray-600 hover:text-blue-600 rounded-t-lg text-sm">FAQ</button>
         <button onclick="showAdminTab('kp')" class="admin-tab px-4 py-2.5 font-semibold text-gray-600 hover:text-blue-600 rounded-t-lg text-sm">Kenaikan Pangkat</button>
@@ -587,20 +628,82 @@ const MENU_KEY='klik_custom_menus',DOKPER_KEY='klik_dokumen_persyaratan',JADWAL_
 const UK_KEY='klik_uji_kompetensi',TB_PER_KEY='klik_tb_persyaratan',TB_DOK_KEY='klik_tb_dokumen';
 const KGB_KEY='klik_kgb_data';
 
+// DEFAULT KP requirements — used if localStorage is empty
+const DEFAULT_KP_REQUIREMENTS = [
+  {
+    id: 1,
+    text: 'Semua PAK mulai pengangkatan awal',
+    note: null,
+    sub: []
+  },
+  {
+    id: 2,
+    text: 'SKP PPK 2 tahun terakhir',
+    note: 'SKP Tahunan terdiri dari 3 dokumen berikut:',
+    sub: [
+      'Dokumen Sasaran Kinerja (SKP Penentuan)',
+      'Evaluasi Kinerja (Dokumen Evaluasi)',
+      'Penilaian Kinerja (SKP Penilaian)'
+    ]
+  },
+  {
+    id: 3,
+    text: 'Karpeg',
+    note: null,
+    sub: []
+  },
+  {
+    id: 4,
+    text: 'SK CPNS',
+    note: null,
+    sub: []
+  },
+  {
+    id: 5,
+    text: 'SK PNS',
+    note: null,
+    sub: []
+  },
+  {
+    id: 6,
+    text: 'SK KP Terakhir',
+    note: null,
+    sub: []
+  },
+  {
+    id: 7,
+    text: 'SK Pengangkatan Pertama JF / SK JF',
+    note: null,
+    sub: []
+  },
+  {
+    id: 8,
+    text: 'Surat Persyaratan Pelantikan (SPP) JF',
+    note: null,
+    sub: []
+  },
+  {
+    id: 9,
+    text: 'SK Mutasi',
+    note: 'Jika ada',
+    sub: []
+  }
+];
+
 let currentUser=JSON.parse(sessionStorage.getItem('klik_user')||'null');
 let kpChart=null;
 let customMenus=JSON.parse(localStorage.getItem(MENU_KEY)||'[]');
-let dokumenPersyaratan=JSON.parse(localStorage.getItem(DOKPER_KEY)||'[]');
+// KP requirements: stored as structured list
+let kpRequirements=JSON.parse(localStorage.getItem(DOKPER_KEY+'_v2')||'null');
+if(!kpRequirements) kpRequirements=[...DEFAULT_KP_REQUIREMENTS];
+
 let jadwalKP=JSON.parse(localStorage.getItem(JADWAL_KEY)||'[]');
 let ujiKomData=JSON.parse(localStorage.getItem(UK_KEY)||'[]');
 let tbPersyaratan=JSON.parse(localStorage.getItem(TB_PER_KEY)||'[]');
 let tbDokumen=JSON.parse(localStorage.getItem(TB_DOK_KEY)||'[]');
-// KGB Data: [{id, kabkota, bulan, nama, uploadedAt}]
 let kgbData=JSON.parse(localStorage.getItem(KGB_KEY)||'[]');
-
-// KGB Sort state
 let kgbSortField='', kgbSortDir='asc';
-let kgbParsedRows=[]; // temp for current file parse
+let kgbParsedRows=[];
 
 async function api(ep,method='GET',body=null,params=''){
     const url=`${API}?endpoint=${ep}${params}`;
@@ -616,29 +719,20 @@ function toast(msg,type='success'){
 async function init(){updateUIForUser();renderCustomMenus();loadSettings();loadPengumuman();}
 async function loadSettings(){try{const d=await api('settings');document.getElementById('scrollingText').textContent=d.scrolling_text;}catch(e){}}
 
-function closeSidebar(){
-    document.getElementById('sidebar').classList.add('sidebar-collapsed');
-    document.getElementById('sidebarOverlay').classList.remove('active');
-}
-function openSidebar(){
-    document.getElementById('sidebar').classList.remove('sidebar-collapsed');
-    if(window.innerWidth < 769) document.getElementById('sidebarOverlay').classList.add('active');
-}
-document.getElementById('sidebarToggle').addEventListener('click',()=>{
-    const sidebar=document.getElementById('sidebar');
-    if(sidebar.classList.contains('sidebar-collapsed')) openSidebar();
-    else closeSidebar();
-});
+function closeSidebar(){document.getElementById('sidebar').classList.add('sidebar-collapsed');document.getElementById('sidebarOverlay').classList.remove('active');}
+function openSidebar(){document.getElementById('sidebar').classList.remove('sidebar-collapsed');if(window.innerWidth<769)document.getElementById('sidebarOverlay').classList.add('active');}
+document.getElementById('sidebarToggle').addEventListener('click',()=>{const s=document.getElementById('sidebar');if(s.classList.contains('sidebar-collapsed'))openSidebar();else closeSidebar();});
 
 function showSection(name){
     event?.preventDefault();
     document.querySelectorAll('.content-section').forEach(s=>s.classList.add('hidden'));
     document.querySelectorAll('.sidebar-item').forEach(i=>i.classList.remove('active'));
-    const map={home:'homeSection','kenaikan-pangkat':'kenaikanPangkatSection','uji-kompetensi':'ujiKompetensiSection','tugas-belajar':'tugasBelajarSection',gallery:'gallerySection','tim-kerja':'timKerjaSection',faq:'faqSection',kontak:'kontakSection',kgb:'kgbSection'};
+    const map={home:'homeSection','kenaikan-pangkat':'kenaikanPangkatSection','uji-kompetensi':'ujiKompetensiSection','tugas-belajar':'tugasBelajarSection',peraturan:'peraturanSection',gallery:'gallerySection','tim-kerja':'timKerjaSection',faq:'faqSection',kontak:'kontakSection',kgb:'kgbSection'};
     document.getElementById(map[name])?.classList.remove('hidden');
     event?.target?.closest('.sidebar-item')?.classList.add('active');
     if(window.innerWidth<769) closeSidebar();
     if(name==='gallery') loadGallery();
+    if(name==='peraturan') loadPeraturan();
     if(name==='tim-kerja') loadTimKerja();
     if(name==='faq') loadFAQ();
     if(name==='kenaikan-pangkat'){renderDokumenPersyaratan();renderJadwalKP();setTimeout(loadKPRecap,100);}
@@ -685,6 +779,149 @@ function updateUIForUser(){
 async function loadPengumuman(){try{const d=await api('pengumuman');renderPengumuman(d);}catch(e){document.getElementById('pengumumanList').innerHTML='<p class="text-red-500">Gagal memuat.</p>';}}
 function renderPengumuman(list){const el=document.getElementById('pengumumanList');if(!list.length){el.innerHTML='<p class="text-gray-500 text-center py-8">Belum ada pengumuman</p>';return;}el.innerHTML=list.map(item=>`<div class="border-l-4 border-blue-600 bg-gradient-to-r from-blue-50 to-transparent pl-6 py-4 rounded-r-lg"><h3 class="font-bold text-lg text-gray-800">${item.title}</h3><p class="text-gray-600 mt-2">${item.content}</p><p class="text-gray-500 text-sm mt-3">📅 ${new Date(item.date).toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'})}</p></div>`).join('');}
 
+// Peraturan
+const DEFAULT_PERATURAN = [
+  {id:1, judul:'PP No. 11 Tahun 2017', kategori:'Manajemen ASN', nomor:'PP 11/2017', tahun:'2017', deskripsi:'Manajemen Pegawai Negeri Sipil', url:''},
+  {id:2, judul:'PP No. 17 Tahun 2020', kategori:'Manajemen ASN', nomor:'PP 17/2020', tahun:'2020', deskripsi:'Perubahan atas PP No. 11 Tahun 2017 tentang Manajemen PNS', url:''},
+  {id:3, judul:'Permenpan-RB No. 1 Tahun 2023', kategori:'Jabatan Fungsional', nomor:'Permenpan 1/2023', tahun:'2023', deskripsi:'Jabatan Fungsional Statistisi', url:''},
+  {id:4, judul:'PerBPS No. 4 Tahun 2021', kategori:'Internal BPS', nomor:'PerBPS 4/2021', tahun:'2021', deskripsi:'Peraturan BPS tentang Kepegawaian', url:''},
+];
+let peraturanData = [];
+
+function loadPeraturan(){
+  const stored = localStorage.getItem('klik_peraturan_v1');
+  peraturanData = stored ? JSON.parse(stored) : JSON.parse(JSON.stringify(DEFAULT_PERATURAN));
+  renderPeraturan(peraturanData);
+  // Populate kategori dropdown
+  const cats = [...new Set(peraturanData.map(p=>p.kategori).filter(Boolean))];
+  const sel = document.getElementById('peraturanKategori');
+  if(sel){
+    sel.innerHTML = '<option value="">Semua Kategori</option>' + cats.map(c=>`<option value="${c}">${c}</option>`).join('');
+  }
+}
+
+function filterPeraturan(){
+  const q = (document.getElementById('peraturanSearch')?.value||'').toLowerCase();
+  const kat = document.getElementById('peraturanKategori')?.value||'';
+  const filtered = peraturanData.filter(p=>{
+    const matchQ = !q || p.judul.toLowerCase().includes(q) || p.deskripsi.toLowerCase().includes(q) || p.nomor.toLowerCase().includes(q);
+    const matchK = !kat || p.kategori===kat;
+    return matchQ && matchK;
+  });
+  renderPeraturan(filtered);
+}
+
+function renderPeraturan(list){
+  const el = document.getElementById('peraturanList');
+  if(!el) return;
+  if(!list.length){
+    el.innerHTML='<div class="text-center py-12 text-gray-400"><svg class="w-16 h-16 mx-auto mb-3 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg><p class="font-semibold text-lg">Tidak ada peraturan ditemukan</p></div>';
+    return;
+  }
+  const katColors = ['blue','purple','green','orange','red','indigo','teal'];
+  const katMap = {};
+  [...new Set(peraturanData.map(p=>p.kategori))].forEach((k,i)=>katMap[k]=katColors[i%katColors.length]);
+  el.innerHTML = list.map(p=>{
+    const c = katMap[p.kategori]||'blue';
+    return `<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex items-start gap-4 hover:shadow-md hover:border-blue-200 transition-all duration-200">
+      <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-${c}-100 flex items-center justify-center">
+        <svg class="w-6 h-6 text-${c}-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="flex flex-wrap items-center gap-2 mb-1">
+          <span class="text-xs font-semibold bg-${c}-100 text-${c}-700 px-2 py-0.5 rounded-full">${p.kategori||'Umum'}</span>
+          <span class="text-xs text-gray-400">${p.tahun||''}</span>
+        </div>
+        <h4 class="font-bold text-gray-800 text-base leading-snug">${p.judul}</h4>
+        ${p.deskripsi ? `<p class="text-sm text-gray-500 mt-1">${p.deskripsi}</p>` : ''}
+        <div class="flex items-center gap-3 mt-3">
+          <span class="text-xs text-gray-400 font-mono bg-gray-50 border border-gray-200 px-2 py-0.5 rounded">${p.nomor||''}</span>
+          ${p.url ? `<a href="${p.url}" target="_blank" class="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 font-semibold hover:underline"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>Buka Dokumen</a>` : ''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderAdmPeraturan(){
+  const d = peraturanData;
+  document.getElementById('adminTabContent').innerHTML=`
+  <div class="space-y-6">
+    <div class="bg-indigo-50 p-6 rounded-xl border-2 border-indigo-200">
+      <h3 class="font-bold text-xl mb-4 text-indigo-800">Tambah Peraturan</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="md:col-span-2"><label class="block text-sm font-semibold text-gray-700 mb-1">Judul Peraturan *</label>
+          <input id="pJudul" type="text" placeholder="Contoh: PP No. 11 Tahun 2017" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-400 outline-none"></div>
+        <div><label class="block text-sm font-semibold text-gray-700 mb-1">Nomor</label>
+          <input id="pNomor" type="text" placeholder="Contoh: PP 11/2017" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-400 outline-none"></div>
+        <div><label class="block text-sm font-semibold text-gray-700 mb-1">Tahun</label>
+          <input id="pTahun" type="text" placeholder="Contoh: 2023" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-400 outline-none"></div>
+        <div><label class="block text-sm font-semibold text-gray-700 mb-1">Kategori</label>
+          <input id="pKategori" type="text" placeholder="Contoh: Manajemen ASN" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-400 outline-none" list="pKatList">
+          <datalist id="pKatList">${[...new Set(d.map(p=>p.kategori).filter(Boolean))].map(k=>`<option value="${k}">`).join('')}</datalist></div>
+        <div><label class="block text-sm font-semibold text-gray-700 mb-1">URL Dokumen</label>
+          <input id="pUrl" type="text" placeholder="https://..." class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-400 outline-none"></div>
+        <div class="md:col-span-2"><label class="block text-sm font-semibold text-gray-700 mb-1">Deskripsi</label>
+          <input id="pDeskripsi" type="text" placeholder="Deskripsi singkat peraturan" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-400 outline-none"></div>
+      </div>
+      <button onclick="addPeraturan()" class="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-semibold transition">Tambah Peraturan</button>
+    </div>
+    <div class="bg-white rounded-xl border-2 border-gray-200 p-5">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-bold text-lg">Daftar Peraturan (${d.length})</h3>
+        <button onclick="resetPeraturan()" class="text-sm text-gray-500 hover:text-red-600 border border-gray-300 px-3 py-1.5 rounded-lg hover:border-red-300 transition">Reset ke Default</button>
+      </div>
+      ${d.length===0?'<div class="text-center py-8 text-gray-400"><p class="text-4xl mb-2">📋</p><p>Belum ada peraturan</p></div>':
+      d.map(p=>`<div class="flex items-start justify-between p-4 bg-gray-50 rounded-xl border border-gray-200 mb-3 gap-3">
+        <div class="flex-1 min-w-0">
+          <p class="font-bold text-gray-800 text-sm">${p.judul}</p>
+          <div class="flex flex-wrap gap-2 mt-1">
+            ${p.kategori?`<span class="text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full">${p.kategori}</span>`:''}
+            ${p.nomor?`<span class="text-xs text-gray-500 font-mono">${p.nomor}</span>`:''}
+            ${p.tahun?`<span class="text-xs text-gray-400">${p.tahun}</span>`:''}
+          </div>
+          ${p.deskripsi?`<p class="text-xs text-gray-500 mt-1">${p.deskripsi}</p>`:''}
+        </div>
+        <button onclick="delPeraturan(${p.id})" class="text-red-500 hover:text-red-700 flex-shrink-0 p-1.5 rounded-lg hover:bg-red-50 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+        </button>
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function addPeraturan(){
+  const judul = document.getElementById('pJudul').value.trim();
+  if(!judul){toast('Judul peraturan wajib diisi!','error');return;}
+  const newItem = {
+    id: Date.now(),
+    judul,
+    nomor: document.getElementById('pNomor').value.trim(),
+    tahun: document.getElementById('pTahun').value.trim(),
+    kategori: document.getElementById('pKategori').value.trim(),
+    deskripsi: document.getElementById('pDeskripsi').value.trim(),
+    url: document.getElementById('pUrl').value.trim(),
+  };
+  peraturanData.push(newItem);
+  localStorage.setItem('klik_peraturan_v1', JSON.stringify(peraturanData));
+  toast('Peraturan berhasil ditambahkan!');
+  renderAdmPeraturan();
+}
+
+function delPeraturan(id){
+  peraturanData = peraturanData.filter(p=>p.id!==id);
+  localStorage.setItem('klik_peraturan_v1', JSON.stringify(peraturanData));
+  toast('Peraturan dihapus');
+  renderAdmPeraturan();
+}
+
+function resetPeraturan(){
+  peraturanData = JSON.parse(JSON.stringify(DEFAULT_PERATURAN));
+  localStorage.removeItem('klik_peraturan_v1');
+  toast('Data direset ke default');
+  renderAdmPeraturan();
+}
+
 // Gallery
 async function loadGallery(){try{const d=await api('gallery');const g=document.getElementById('galleryGrid');if(!d.length){g.innerHTML='<p class="text-gray-500 col-span-full text-center py-8">Belum ada foto</p>';return;}g.innerHTML=d.map(i=>`<div class="bg-white rounded-xl shadow-lg overflow-hidden card-hover"><img src="../${i.image_path}" class="w-full h-56 object-cover"><div class="p-4"><h3 class="font-bold">${i.title}</h3></div></div>`).join('');}catch(e){}}
 async function loadTimKerja(){try{const d=await api('tim_kerja');const g=document.getElementById('timKerjaGrid');if(!d.length){g.innerHTML='<p class="text-gray-500 col-span-full text-center py-8">Belum ada anggota</p>';return;}g.innerHTML=d.map(m=>`<div class="bg-white rounded-xl shadow-lg p-6 text-center card-hover"><img src="../${m.photo_path}" class="w-28 h-28 rounded-full mx-auto mb-4 object-cover border-4 border-blue-100"><h3 class="font-bold text-lg">${m.name}</h3><p class="text-sm text-gray-600 mb-3">${m.position}</p><div class="text-blue-600 bg-blue-50 py-2 px-4 rounded-lg font-semibold text-sm">${m.phone}</div></div>`).join('');}catch(e){}}
@@ -692,10 +929,48 @@ async function loadFAQ(){try{const d=await api('faq');renderFAQ(d);}catch(e){}}
 function renderFAQ(list){const el=document.getElementById('faqList');if(!list.length){el.innerHTML='<p class="text-gray-500 text-center py-8">Belum ada pertanyaan</p>';return;}el.innerHTML=list.map(i=>`<div class="border-2 border-gray-200 rounded-xl p-5"><div class="flex items-start space-x-3"><span class="text-3xl">❓</span><h4 class="font-bold text-lg mt-1">${i.question}</h4></div>${i.answer?`<div class="mt-4 ml-12 p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500"><span class="text-2xl">💡</span><p class="text-gray-700 mt-1 inline">${i.answer}</p></div>`:'<p class="text-sm text-yellow-600 mt-3 ml-12 bg-yellow-50 py-2 px-4 rounded-lg inline-block">⏳ Menunggu jawaban</p>'}</div>`).join('');}
 async function submitQuestion(){const q=document.getElementById('faqQuestion').value.trim();if(!q){toast('Tulis pertanyaan!','error');return;}try{await api('faq','POST',{question:q});document.getElementById('faqQuestion').value='';toast('Pertanyaan dikirim!');loadFAQ();}catch(e){toast(e.message,'error');}}
 
-// KP
-function saveDokumenPersyaratan(){localStorage.setItem(DOKPER_KEY,JSON.stringify(dokumenPersyaratan));}
-function pdfCard(doc,color='red'){return `<a href="${doc.url}" target="_blank" class="pdf-card flex flex-col items-center bg-gradient-to-br from-${color}-50 to-${color}-100 border-2 border-${color}-200 rounded-2xl p-5 text-center hover:border-${color}-400 transition group"><div class="w-14 h-14 bg-gradient-to-br from-${color}-500 to-${color}-700 rounded-2xl flex items-center justify-center mb-3 shadow-md"><svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg></div><p class="font-bold text-${color}-800 text-sm">${doc.title}</p>${doc.description?`<p class="text-xs text-${color}-500 mt-1">${doc.description}</p>`:''}<span class="mt-3 text-xs bg-${color}-100 text-${color}-700 px-3 py-1 rounded-full font-semibold">Buka PDF</span></a>`;}
-function renderDokumenPersyaratan(){const el=document.getElementById('dokumenPersyaratanList');if(!dokumenPersyaratan.length){el.innerHTML='<div class="col-span-full text-center py-10 text-gray-400"><p class="font-semibold">Belum ada dokumen persyaratan</p></div>';return;}el.innerHTML=dokumenPersyaratan.map(d=>pdfCard(d,'red')).join('');}
+// ══════════════════════════════════════════════════════
+// KP — DOKUMEN PERSYARATAN (Text-based list)
+// ══════════════════════════════════════════════════════
+
+function saveKPRequirements(){localStorage.setItem(DOKPER_KEY+'_v2',JSON.stringify(kpRequirements));}
+
+function renderDokumenPersyaratan(){
+    const el=document.getElementById('dokumenPersyaratanList');
+    if(!kpRequirements.length){
+        el.innerHTML='<div class="text-center py-10 text-gray-400"><p class="font-semibold">Belum ada daftar persyaratan</p></div>';
+        return;
+    }
+    el.innerHTML = kpRequirements.map((req, idx) => {
+        const hasNote = req.note;
+        const hasSub = req.sub && req.sub.length > 0;
+        const isSpecial = hasSub || hasNote;
+
+        let subHtml = '';
+        if (hasSub) {
+            subHtml = `<div class="kp-req-sub">${req.sub.map(s => `<div class="kp-req-sub-item">${s}</div>`).join('')}</div>`;
+        }
+        let noteHtml = '';
+        if (hasNote && !hasSub) {
+            noteHtml = `<span class="kp-req-note">💡 ${req.note}</span>`;
+        }
+        if (hasNote && hasSub) {
+            noteHtml = `<p class="text-sm text-gray-500 mt-1 mb-2 italic">${req.note}</p>`;
+        }
+
+        return `<div class="kp-req-item ${isSpecial ? 'has-sub' : ''}">
+            <div class="kp-req-num">${idx + 1}</div>
+            <div class="flex-1 min-w-0">
+                <p class="font-semibold text-gray-800 text-[15px] leading-snug">${req.text}</p>
+                ${noteHtml}
+                ${subHtml}
+            </div>
+            <svg class="w-4 h-4 text-gray-300 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </div>`;
+    }).join('');
+}
+
+// KP — Jadwal & Data
 function saveJadwalKP(){localStorage.setItem(JADWAL_KEY,JSON.stringify(jadwalKP));}
 function renderJadwalKP(){const el=document.getElementById('jadwalKPList');if(!jadwalKP.length){el.innerHTML='<div class="text-center py-10 text-gray-400"><p class="font-semibold">Belum ada jadwal</p></div>';return;}el.innerHTML=jadwalKP.map(item=>`<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border-l-4 border-green-500 hover:shadow-md transition"><div class="flex items-start gap-4"><div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow"><svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></div><div><p class="font-bold text-gray-800 text-lg">${item.periode}</p>${item.tanggal?`<p class="text-sm text-green-700 font-semibold">📅 ${item.tanggal}</p>`:''} ${item.keterangan?`<p class="text-sm text-gray-500">${item.keterangan}</p>`:''}</div></div>${item.pdfUrl?`<a href="${item.pdfUrl}" target="_blank" class="flex-shrink-0 flex items-center gap-2 bg-white border-2 border-red-300 text-red-700 font-semibold px-5 py-2.5 rounded-xl hover:bg-red-50 transition shadow-sm text-sm"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>Jadwal PDF</a>`:'<span class="text-xs text-gray-400">Belum ada PDF</span>'}</div>`).join('');}
 async function loadKPRecap(){const month=document.getElementById('kpMonthSelect')?.value;if(!month)return;try{const d=await api('kp_data','GET',null,'&month='+month);const s=getGolStats(d);document.getElementById('statTotal').textContent=d.length;document.getElementById('statGolIII').textContent=s['III'];document.getElementById('statGolIV').textContent=s['IV'];document.getElementById('statGolII').textContent=s['II'];const tb=document.getElementById('kpTableBody');tb.innerHTML=!d.length?'<tr><td colspan="7" class="text-center py-8 text-gray-500">Belum ada data</td></tr>':d.map((r,i)=>`<tr class="hover:bg-blue-50 transition"><td class="p-3 text-center font-semibold">${i+1}</td><td class="p-3 font-semibold">${r.name}</td><td class="p-3">${r.nip}</td><td class="p-3">${r.old_rank}</td><td class="p-3 text-green-700 font-semibold">${r.new_rank}</td><td class="p-3 text-center">${new Date(r.date).toLocaleDateString('id-ID')}</td><td class="p-3 text-center">${r.drive_url?`<a href="${r.drive_url}" target="_blank" class="text-blue-600 hover:underline text-sm font-semibold">Upload</a>`:'—'}</td></tr>`).join('');drawKPChart(d);}catch(e){}}
@@ -718,233 +993,75 @@ function renderTBDokumen(){const el=document.getElementById('tbDokumenList');if(
 // ══════════════════════════════════════════════════════
 // KGB — KENAIKAN GAJI BERKALA
 // ══════════════════════════════════════════════════════
-
 function saveKGBData(){localStorage.setItem(KGB_KEY,JSON.stringify(kgbData));}
-
 function switchKGBTab(tab){
-    const upBtn=document.getElementById('kgbTabUpload');
-    const dbBtn=document.getElementById('kgbTabDashboard');
-    const upPanel=document.getElementById('kgbUploadPanel');
-    const dbPanel=document.getElementById('kgbDashboardPanel');
-    if(tab==='upload'){
-        upBtn.classList.add('bg-white','shadow','text-indigo-700');upBtn.classList.remove('text-gray-500');
-        dbBtn.classList.remove('bg-white','shadow','text-indigo-700');dbBtn.classList.add('text-gray-500');
-        upPanel.classList.remove('hidden');dbPanel.classList.add('hidden');
-    } else {
-        dbBtn.classList.add('bg-white','shadow','text-indigo-700');dbBtn.classList.remove('text-gray-500');
-        upBtn.classList.remove('bg-white','shadow','text-indigo-700');upBtn.classList.add('text-gray-500');
-        dbPanel.classList.remove('hidden');upPanel.classList.add('hidden');
-        refreshKGBDashboard();
-    }
+    const upBtn=document.getElementById('kgbTabUpload');const dbBtn=document.getElementById('kgbTabDashboard');const upPanel=document.getElementById('kgbUploadPanel');const dbPanel=document.getElementById('kgbDashboardPanel');
+    if(tab==='upload'){upBtn.classList.add('bg-white','shadow','text-indigo-700');upBtn.classList.remove('text-gray-500');dbBtn.classList.remove('bg-white','shadow','text-indigo-700');dbBtn.classList.add('text-gray-500');upPanel.classList.remove('hidden');dbPanel.classList.add('hidden');}
+    else{dbBtn.classList.add('bg-white','shadow','text-indigo-700');dbBtn.classList.remove('text-gray-500');upBtn.classList.remove('bg-white','shadow','text-indigo-700');upBtn.classList.add('text-gray-500');dbPanel.classList.remove('hidden');upPanel.classList.add('hidden');refreshKGBDashboard();}
 }
-
-// Drag and drop
 function kgbDragOver(e){e.preventDefault();document.getElementById('kgbDropZone').classList.add('dragover');}
 function kgbDragLeave(e){document.getElementById('kgbDropZone').classList.remove('dragover');}
 function kgbDrop(e){e.preventDefault();document.getElementById('kgbDropZone').classList.remove('dragover');const f=e.dataTransfer.files[0];if(f)handleKGBFile(f);}
-
 function handleKGBFile(file){
     if(!file)return;
     if(!file.name.match(/\.(xlsx|xls)$/i)){toast('Format file harus .xlsx atau .xls','error');return;}
-    document.getElementById('kgbFileName').textContent='📂 '+file.name;
-    document.getElementById('kgbFileName').classList.remove('hidden');
+    document.getElementById('kgbFileName').textContent='📂 '+file.name;document.getElementById('kgbFileName').classList.remove('hidden');
     const reader=new FileReader();
     reader.onload=function(e){
-        try{
-            const wb=XLSX.read(e.target.result,{type:'array'});
-            const ws=wb.Sheets[wb.SheetNames[0]];
-            const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
-            // Skip header row
-            const data=[];
-            for(let i=1;i<rows.length;i++){
-                const row=rows[i];
-                const nama=String(row[1]||'').trim();
-                if(nama && nama.toLowerCase()!=='nama pegawai') data.push({no:data.length+1,nama});
-            }
-            if(!data.length){toast('Tidak ada data pegawai ditemukan!','error');return;}
-            kgbParsedRows=data;
-            // show preview
-            document.getElementById('kgbPreviewCount').textContent=data.length;
-            document.getElementById('kgbPreviewBody').innerHTML=data.map(r=>`<tr><td class="p-2 text-center text-gray-400">${r.no}</td><td class="p-2 text-gray-800 font-medium">${r.nama}</td></tr>`).join('');
-            document.getElementById('kgbPreviewWrap').classList.remove('hidden');
-            toast(`✅ ${data.length} pegawai berhasil dibaca`);
-        }catch(err){toast('Gagal membaca file Excel: '+err.message,'error');}
-    };
-    reader.readAsArrayBuffer(file);
+        try{const wb=XLSX.read(e.target.result,{type:'array'});const ws=wb.Sheets[wb.SheetNames[0]];const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});const data=[];
+        for(let i=1;i<rows.length;i++){const row=rows[i];const nama=String(row[1]||'').trim();if(nama&&nama.toLowerCase()!=='nama pegawai')data.push({no:data.length+1,nama});}
+        if(!data.length){toast('Tidak ada data pegawai ditemukan!','error');return;}
+        kgbParsedRows=data;document.getElementById('kgbPreviewCount').textContent=data.length;document.getElementById('kgbPreviewBody').innerHTML=data.map(r=>`<tr><td class="p-2 text-center text-gray-400">${r.no}</td><td class="p-2 text-gray-800 font-medium">${r.nama}</td></tr>`).join('');document.getElementById('kgbPreviewWrap').classList.remove('hidden');toast(`✅ ${data.length} pegawai berhasil dibaca`);}catch(err){toast('Gagal membaca file Excel: '+err.message,'error');}
+    };reader.readAsArrayBuffer(file);
 }
-
 function processKGBUpload(){
-    const kabkota=document.getElementById('kgbKabKota').value;
-    const bulan=document.getElementById('kgbBulan').value;
-    if(!kabkota){toast('Pilih Kabupaten/Kota terlebih dahulu!','error');return;}
-    if(!bulan){toast('Pilih Bulan KGB terlebih dahulu!','error');return;}
-    if(!kgbParsedRows.length){toast('Upload dan parse file Excel terlebih dahulu!','error');return;}
-
-    // Remove existing data for same kabkota+bulan (replace mode)
-    const before=kgbData.length;
-    kgbData=kgbData.filter(r=>!(r.kabkota===kabkota && r.bulan===bulan));
-    const removed=before-kgbData.length;
-
-    // Add new rows
-    const ts=new Date().toISOString();
-    kgbParsedRows.forEach(r=>{
-        kgbData.push({id:Date.now()+Math.random(),kabkota,bulan,nama:r.nama,uploadedAt:ts});
-    });
-    saveKGBData();
-
-    const msg=removed>0?`Data lama (${removed} pegawai) diganti, ${kgbParsedRows.length} data baru disimpan!`:`${kgbParsedRows.length} data berhasil disimpan ke Dashboard!`;
-    toast(msg);
-
-    // Reset form
-    kgbParsedRows=[];
-    document.getElementById('kgbFileInput').value='';
-    document.getElementById('kgbFileName').classList.add('hidden');
-    document.getElementById('kgbPreviewWrap').classList.add('hidden');
-
-    // Switch to dashboard
+    const kabkota=document.getElementById('kgbKabKota').value;const bulan=document.getElementById('kgbBulan').value;
+    if(!kabkota){toast('Pilih Kabupaten/Kota terlebih dahulu!','error');return;}if(!bulan){toast('Pilih Bulan KGB terlebih dahulu!','error');return;}if(!kgbParsedRows.length){toast('Upload dan parse file Excel terlebih dahulu!','error');return;}
+    const before=kgbData.length;kgbData=kgbData.filter(r=>!(r.kabkota===kabkota&&r.bulan===bulan));const removed=before-kgbData.length;const ts=new Date().toISOString();
+    kgbParsedRows.forEach(r=>{kgbData.push({id:Date.now()+Math.random(),kabkota,bulan,nama:r.nama,uploadedAt:ts});});
+    saveKGBData();const msg=removed>0?`Data lama (${removed} pegawai) diganti, ${kgbParsedRows.length} data baru disimpan!`:`${kgbParsedRows.length} data berhasil disimpan ke Dashboard!`;toast(msg);
+    kgbParsedRows=[];document.getElementById('kgbFileInput').value='';document.getElementById('kgbFileName').classList.add('hidden');document.getElementById('kgbPreviewWrap').classList.add('hidden');
     setTimeout(()=>switchKGBTab('dashboard'),800);
 }
-
-function downloadKGBTemplate(){
-    const wb=XLSX.utils.book_new();
-    const ws=XLSX.utils.aoa_to_sheet([
-        ['No','Nama Pegawai'],
-        [1,'Budi Santoso, S.ST'],
-        [2,'Siti Rahayu, SE'],
-        [3,'Ahmad Fauzi, S.Si'],
-    ]);
-    ws['!cols']=[{wch:6},{wch:40}];
-    XLSX.utils.book_append_sheet(wb,ws,'Data KGB');
-    XLSX.writeFile(wb,'Template_KGB.xlsx');
-    toast('Template berhasil diunduh!');
-}
-
-// ── Dashboard KGB ──
+function downloadKGBTemplate(){const wb=XLSX.utils.book_new();const ws=XLSX.utils.aoa_to_sheet([['No','Nama Pegawai'],[1,'Budi Santoso, S.ST'],[2,'Siti Rahayu, SE'],[3,'Ahmad Fauzi, S.Si']]);ws['!cols']=[{wch:6},{wch:40}];XLSX.utils.book_append_sheet(wb,ws,'Data KGB');XLSX.writeFile(wb,'Template_KGB.xlsx');toast('Template berhasil diunduh!');}
 function refreshKGBDashboard(){
-    // Populate filter dropdowns
-    const bulanSet=[...new Set(kgbData.map(r=>r.bulan))].sort();
-    const kabSet=[...new Set(kgbData.map(r=>r.kabkota))].sort();
-    const fbEl=document.getElementById('kgbFilterBulan');
-    const fkEl=document.getElementById('kgbFilterKabkota');
-    const curBulan=fbEl.value,curKab=fkEl.value;
+    const bulanSet=[...new Set(kgbData.map(r=>r.bulan))].sort();const kabSet=[...new Set(kgbData.map(r=>r.kabkota))].sort();
+    const fbEl=document.getElementById('kgbFilterBulan');const fkEl=document.getElementById('kgbFilterKabkota');const curBulan=fbEl.value,curKab=fkEl.value;
     fbEl.innerHTML='<option value="">Semua Bulan</option>'+bulanSet.map(b=>`<option value="${b}" ${b===curBulan?'selected':''}>${b}</option>`).join('');
     fkEl.innerHTML='<option value="">Semua Kab/Kota</option>'+kabSet.map(k=>`<option value="${k}" ${k===curKab?'selected':''}>${k}</option>`).join('');
-
-    // Stats
-    const totalP=kgbData.length;
-    const kabCount=[...new Set(kgbData.map(r=>r.kabkota))].length;
-    const bulanCount=[...new Set(kgbData.map(r=>r.bulan))].length;
-    const avg=kabCount>0?Math.round(totalP/kabCount):0;
-    document.getElementById('kgbStatTotal').textContent=totalP;
-    document.getElementById('kgbStatKabkota').textContent=kabCount;
-    document.getElementById('kgbStatBulan').textContent=bulanCount;
-    document.getElementById('kgbStatAvg').textContent=avg;
-
-    // KabKota pills
-    const pillsEl=document.getElementById('kgbKabkotaPills');
-    const kabStats={};kgbData.forEach(r=>{if(!kabStats[r.kabkota])kabStats[r.kabkota]=0;kabStats[r.kabkota]++;});
+    const totalP=kgbData.length;const kabCount=[...new Set(kgbData.map(r=>r.kabkota))].length;const bulanCount=[...new Set(kgbData.map(r=>r.bulan))].length;const avg=kabCount>0?Math.round(totalP/kabCount):0;
+    document.getElementById('kgbStatTotal').textContent=totalP;document.getElementById('kgbStatKabkota').textContent=kabCount;document.getElementById('kgbStatBulan').textContent=bulanCount;document.getElementById('kgbStatAvg').textContent=avg;
+    const pillsEl=document.getElementById('kgbKabkotaPills');const kabStats={};kgbData.forEach(r=>{if(!kabStats[r.kabkota])kabStats[r.kabkota]=0;kabStats[r.kabkota]++;});
     const colors=['bg-indigo-100 text-indigo-700','bg-purple-100 text-purple-700','bg-sky-100 text-sky-700','bg-teal-100 text-teal-700','bg-pink-100 text-pink-700','bg-amber-100 text-amber-700'];
-    let pillH='';
-    Object.entries(kabStats).sort((a,b)=>b[1]-a[1]).forEach(([kab,cnt],i)=>{
-        const cl=colors[i%colors.length];
-        pillH+=`<div class="flex items-center gap-2 ${cl} px-3 py-2 rounded-xl text-sm font-semibold cursor-pointer hover:opacity-80 transition" onclick="quickFilterKab('${kab}')"><span>${kab}</span><span class="bg-white bg-opacity-60 px-2 py-0.5 rounded-full text-xs font-bold">${cnt}</span></div>`;
-    });
-    pillsEl.innerHTML=pillH||'<p class="text-sm text-gray-400">Belum ada data</p>';
-
-    renderKGBDashboard();
+    let pillH='';Object.entries(kabStats).sort((a,b)=>b[1]-a[1]).forEach(([kab,cnt],i)=>{const cl=colors[i%colors.length];pillH+=`<div class="flex items-center gap-2 ${cl} px-3 py-2 rounded-xl text-sm font-semibold cursor-pointer hover:opacity-80 transition" onclick="quickFilterKab('${kab}')"><span>${kab}</span><span class="bg-white bg-opacity-60 px-2 py-0.5 rounded-full text-xs font-bold">${cnt}</span></div>`;});
+    pillsEl.innerHTML=pillH||'<p class="text-sm text-gray-400">Belum ada data</p>';renderKGBDashboard();
 }
-
-function quickFilterKab(kab){
-    document.getElementById('kgbFilterKabkota').value=kab;
-    renderKGBDashboard();
-}
-
+function quickFilterKab(kab){document.getElementById('kgbFilterKabkota').value=kab;renderKGBDashboard();}
 function renderKGBDashboard(){
-    const filterBulan=document.getElementById('kgbFilterBulan')?.value||'';
-    const filterKab=document.getElementById('kgbFilterKabkota')?.value||'';
-    const search=(document.getElementById('kgbSearch')?.value||'').toLowerCase();
-
-    let data=[...kgbData];
-    if(filterBulan) data=data.filter(r=>r.bulan===filterBulan);
-    if(filterKab) data=data.filter(r=>r.kabkota===filterKab);
-    if(search) data=data.filter(r=>r.nama.toLowerCase().includes(search)||r.kabkota.toLowerCase().includes(search));
-
-    // Sorting
-    if(kgbSortField){
-        data.sort((a,b)=>{
-            let av=a[kgbSortField==='nama'?'nama':kgbSortField==='kabkota'?'kabkota':'bulan']||'';
-            let bv=b[kgbSortField==='nama'?'nama':kgbSortField==='kabkota'?'kabkota':'bulan']||'';
-            return kgbSortDir==='asc'?av.localeCompare(bv):bv.localeCompare(av);
-        });
-    }
-
-    document.getElementById('kgbTableCount').textContent=data.length+' data';
-    const tbody=document.getElementById('kgbTableBody');
-    if(!data.length){
-        tbody.innerHTML=`<tr><td colspan="5" class="text-center py-16 text-gray-400"><div class="text-4xl mb-2">${kgbData.length?'🔍':'📭'}</div><p class="font-semibold">${kgbData.length?'Tidak ada data sesuai filter':'Belum ada data KGB'}</p><p class="text-sm">${kgbData.length?'Coba ubah filter':'Upload file Excel dari tab Upload Data'}</p></td></tr>`;
-        return;
-    }
-    tbody.innerHTML=data.map((r,i)=>`<tr class="hover:bg-indigo-50 transition kgb-row-enter">
-        <td class="p-3 text-center text-gray-500 font-semibold">${i+1}</td>
-        <td class="p-3 font-semibold text-gray-800">${r.nama}</td>
-        <td class="p-3"><span class="bg-indigo-50 text-indigo-700 px-2 py-1 rounded-lg text-xs font-semibold">${r.kabkota}</span></td>
-        <td class="p-3"><span class="bg-purple-50 text-purple-700 px-2 py-1 rounded-lg text-xs font-semibold">📅 ${r.bulan}</span></td>
-        <td class="p-3 text-center"><button onclick="deleteKGBRow('${r.id}')" class="text-red-400 hover:text-red-600 hover:bg-red-50 p-1.5 rounded-lg transition" title="Hapus"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button></td>
-    </tr>`).join('');
+    const filterBulan=document.getElementById('kgbFilterBulan')?.value||'';const filterKab=document.getElementById('kgbFilterKabkota')?.value||'';const search=(document.getElementById('kgbSearch')?.value||'').toLowerCase();
+    let data=[...kgbData];if(filterBulan)data=data.filter(r=>r.bulan===filterBulan);if(filterKab)data=data.filter(r=>r.kabkota===filterKab);if(search)data=data.filter(r=>r.nama.toLowerCase().includes(search)||r.kabkota.toLowerCase().includes(search));
+    if(kgbSortField){data.sort((a,b)=>{let av=a[kgbSortField==='nama'?'nama':kgbSortField==='kabkota'?'kabkota':'bulan']||'';let bv=b[kgbSortField==='nama'?'nama':kgbSortField==='kabkota'?'kabkota':'bulan']||'';return kgbSortDir==='asc'?av.localeCompare(bv):bv.localeCompare(av);});}
+    document.getElementById('kgbTableCount').textContent=data.length+' data';const tbody=document.getElementById('kgbTableBody');
+    if(!data.length){tbody.innerHTML=`<tr><td colspan="5" class="text-center py-16 text-gray-400"><div class="text-4xl mb-2">${kgbData.length?'🔍':'📭'}</div><p class="font-semibold">${kgbData.length?'Tidak ada data sesuai filter':'Belum ada data KGB'}</p><p class="text-sm">${kgbData.length?'Coba ubah filter':'Upload file Excel dari tab Upload Data'}</p></td></tr>`;return;}
+    tbody.innerHTML=data.map((r,i)=>`<tr class="hover:bg-indigo-50 transition kgb-row-enter"><td class="p-3 text-center text-gray-500 font-semibold">${i+1}</td><td class="p-3 font-semibold text-gray-800">${r.nama}</td><td class="p-3"><span class="bg-indigo-50 text-indigo-700 px-2 py-1 rounded-lg text-xs font-semibold">${r.kabkota}</span></td><td class="p-3"><span class="bg-purple-50 text-purple-700 px-2 py-1 rounded-lg text-xs font-semibold">📅 ${r.bulan}</span></td><td class="p-3 text-center"><button onclick="deleteKGBRow('${r.id}')" class="text-red-400 hover:text-red-600 hover:bg-red-50 p-1.5 rounded-lg transition" title="Hapus"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button></td></tr>`).join('');
 }
-
-function sortKGBTable(field){
-    if(kgbSortField===field) kgbSortDir=kgbSortDir==='asc'?'desc':'asc';
-    else{kgbSortField=field;kgbSortDir='asc';}
-    // Update header indicators
-    ['nama','kabkota','bulan'].forEach(f=>{
-        const el=document.getElementById('kgbSort'+f.charAt(0).toUpperCase()+f.slice(1));
-        if(el){el.className='p-3 text-left sort-btn'+(f===kgbSortField?(' sort-'+kgbSortDir):'');}
-    });
-    renderKGBDashboard();
-}
-
-function deleteKGBRow(id){
-    kgbData=kgbData.filter(r=>String(r.id)!==String(id));
-    saveKGBData();
-    toast('Data dihapus');
-    refreshKGBDashboard();
-}
-
-function clearKGBFilter(){
-    document.getElementById('kgbFilterBulan').value='';
-    document.getElementById('kgbFilterKabkota').value='';
-    document.getElementById('kgbSearch').value='';
-    kgbSortField='';kgbSortDir='asc';
-    ['Nama','Kabkota','Bulan'].forEach(f=>{const el=document.getElementById('kgbSort'+f);if(el)el.className='p-3 text-left sort-btn';});
-    renderKGBDashboard();
-}
-
+function sortKGBTable(field){if(kgbSortField===field)kgbSortDir=kgbSortDir==='asc'?'desc':'asc';else{kgbSortField=field;kgbSortDir='asc';}['nama','kabkota','bulan'].forEach(f=>{const el=document.getElementById('kgbSort'+f.charAt(0).toUpperCase()+f.slice(1));if(el){el.className='p-3 text-left sort-btn'+(f===kgbSortField?(' sort-'+kgbSortDir):'');}});renderKGBDashboard();}
+function deleteKGBRow(id){kgbData=kgbData.filter(r=>String(r.id)!==String(id));saveKGBData();toast('Data dihapus');refreshKGBDashboard();}
+function clearKGBFilter(){document.getElementById('kgbFilterBulan').value='';document.getElementById('kgbFilterKabkota').value='';document.getElementById('kgbSearch').value='';kgbSortField='';kgbSortDir='asc';['Nama','Kabkota','Bulan'].forEach(f=>{const el=document.getElementById('kgbSort'+f);if(el)el.className='p-3 text-left sort-btn';});renderKGBDashboard();}
 function exportKGBToExcel(){
-    const filterBulan=document.getElementById('kgbFilterBulan')?.value||'';
-    const filterKab=document.getElementById('kgbFilterKabkota')?.value||'';
-    const search=(document.getElementById('kgbSearch')?.value||'').toLowerCase();
-    let data=[...kgbData];
-    if(filterBulan) data=data.filter(r=>r.bulan===filterBulan);
-    if(filterKab) data=data.filter(r=>r.kabkota===filterKab);
-    if(search) data=data.filter(r=>r.nama.toLowerCase().includes(search));
+    const filterBulan=document.getElementById('kgbFilterBulan')?.value||'';const filterKab=document.getElementById('kgbFilterKabkota')?.value||'';const search=(document.getElementById('kgbSearch')?.value||'').toLowerCase();
+    let data=[...kgbData];if(filterBulan)data=data.filter(r=>r.bulan===filterBulan);if(filterKab)data=data.filter(r=>r.kabkota===filterKab);if(search)data=data.filter(r=>r.nama.toLowerCase().includes(search));
     if(!data.length){toast('Tidak ada data untuk diekspor','error');return;}
     const title='REKAP KENAIKAN GAJI BERKALA'+(filterBulan?' - '+filterBulan.toUpperCase():'')+(filterKab?' - '+filterKab.toUpperCase():'');
-    const wb=XLSX.utils.book_new();
-    const aoa=[[title,'','',''],['No','Nama Pegawai','Kabupaten/Kota','Bulan KGB'],...data.map((r,i)=>[i+1,r.nama,r.kabkota,r.bulan])];
-    const ws=XLSX.utils.aoa_to_sheet(aoa);
-    ws['!cols']=[{wch:5},{wch:40},{wch:30},{wch:20}];
-    XLSX.utils.book_append_sheet(wb,ws,'Rekap KGB');
-    const fn=`Rekap-KGB${filterBulan?'-'+filterBulan.replace(/ /g,'-'):''}${filterKab?'-'+filterKab.replace(/[^a-zA-Z0-9]/g,'-'):''}`;
-    XLSX.writeFile(wb,fn+'.xlsx');
-    toast('Export berhasil!');
+    const wb=XLSX.utils.book_new();const aoa=[[title,'','',''],['No','Nama Pegawai','Kabupaten/Kota','Bulan KGB'],...data.map((r,i)=>[i+1,r.nama,r.kabkota,r.bulan])];const ws=XLSX.utils.aoa_to_sheet(aoa);ws['!cols']=[{wch:5},{wch:40},{wch:30},{wch:20}];XLSX.utils.book_append_sheet(wb,ws,'Rekap KGB');
+    const fn=`Rekap-KGB${filterBulan?'-'+filterBulan.replace(/ /g,'-'):''}${filterKab?'-'+filterKab.replace(/[^a-zA-Z0-9]/g,'-'):''}`;XLSX.writeFile(wb,fn+'.xlsx');toast('Export berhasil!');
 }
 
 // ══════════════════════════════════════════
 // ADMIN DASHBOARD
 // ══════════════════════════════════════════
 function showAdminDashboard(){event?.preventDefault();if(!currentUser){showLoginModal();return;}document.getElementById('adminModal').classList.add('active');const rn=currentUser.role==='admin_pengelola'?'Admin Pengelola':'Admin Kepegawaian';const bc=currentUser.role==='admin_pengelola'?'pengelola':'kepegawaian';document.getElementById('adminRoleBadge').innerHTML=`<span class="admin-badge ${bc}">${rn}</span>`;showAdminTab('scrolling');}
-function showAdminTab(tab){document.querySelectorAll('.admin-tab').forEach(b=>{b.classList.remove('text-blue-600','border-b-4','border-blue-600');b.classList.add('text-gray-600');});event?.target?.classList.add('text-blue-600','border-b-4','border-blue-600');event?.target?.classList.remove('text-gray-600');switch(tab){case 'scrolling':renderAdmScrolling();break;case 'pengumuman':renderAdmPengumuman();break;case 'gallery':renderAdmGallery();break;case 'tim':renderAdmTim();break;case 'faq':renderAdmFAQ();break;case 'kp':renderAdmKP();break;case 'uk':renderAdmUK();break;case 'tb':renderAdmTB();break;case 'menu':renderAdmMenu();break;}}
+function showAdminTab(tab){document.querySelectorAll('.admin-tab').forEach(b=>{b.classList.remove('text-blue-600','border-b-4','border-blue-600');b.classList.add('text-gray-600');});event?.target?.classList.add('text-blue-600','border-b-4','border-blue-600');event?.target?.classList.remove('text-gray-600');switch(tab){case 'scrolling':renderAdmScrolling();break;case 'pengumuman':renderAdmPengumuman();break;case 'gallery':renderAdmGallery();break;case 'tim':renderAdmTim();break;case 'faq':renderAdmFAQ();break;case 'kp':renderAdmKP();break;case 'uk':renderAdmUK();break;case 'tb':renderAdmTB();break;case 'menu':renderAdmMenu();break;case 'peraturan':renderAdmPeraturan();break;}}
 
 async function renderAdmScrolling(){document.getElementById('adminTabContent').innerHTML='<div class="space-y-4"><h3 class="font-bold text-xl">Edit Scrolling Text</h3><textarea id="scrollInput" class="w-full p-4 border-2 border-gray-300 rounded-lg" rows="3"></textarea><button onclick="saveScrolling()" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold">Simpan</button></div>';try{const d=await api('settings');document.getElementById('scrollInput').value=d.scrolling_text;}catch(e){}}
 async function saveScrolling(){try{await api('settings','PUT',{scrolling_text:document.getElementById('scrollInput').value});document.getElementById('scrollingText').textContent=document.getElementById('scrollInput').value;toast('Scrolling text diupdate!');}catch(e){toast(e.message,'error');}}
@@ -965,11 +1082,81 @@ async function renderAdmFAQ(){const d=await api('faq');document.getElementById('
 async function answerFAQ(id){const a=document.getElementById('fAns'+id).value;if(!a){toast('Isi jawaban!','error');return;}try{await api('faq','PUT',{id,answer:a});toast('Jawaban disimpan!');renderAdmFAQ();loadFAQ();}catch(e){toast(e.message,'error');}}
 async function delFAQ(id){try{await api('faq','DELETE',{id});toast('FAQ dihapus');renderAdmFAQ();loadFAQ();}catch(e){toast(e.message,'error');}}
 
-function renderAdmKP(){document.getElementById('adminTabContent').innerHTML=`<div class="space-y-4"><div class="flex gap-2 border-b-2 border-gray-200 pb-0"><button id="kpSub-dok" onclick="switchKPSub('dok')" class="px-5 py-2.5 font-semibold text-blue-600 border-b-4 border-blue-600 rounded-t-lg text-sm">Dokumen Persyaratan</button><button id="kpSub-jdw" onclick="switchKPSub('jdw')" class="px-5 py-2.5 font-semibold text-gray-500 hover:text-blue-600 rounded-t-lg text-sm">Jadwal Periode</button><button id="kpSub-dat" onclick="switchKPSub('dat')" class="px-5 py-2.5 font-semibold text-gray-500 hover:text-blue-600 rounded-t-lg text-sm">Data Pegawai</button></div><div id="kpSubContent"></div></div>`;switchKPSub('dok');}
+// ══════════════════════════════════════════════
+// ADMIN KP — Updated: manage text-based req list
+// ══════════════════════════════════════════════
+function renderAdmKP(){document.getElementById('adminTabContent').innerHTML=`<div class="space-y-4"><div class="flex gap-2 border-b-2 border-gray-200 pb-0"><button id="kpSub-dok" onclick="switchKPSub('dok')" class="px-5 py-2.5 font-semibold text-blue-600 border-b-4 border-blue-600 rounded-t-lg text-sm">Persyaratan Dokumen</button><button id="kpSub-jdw" onclick="switchKPSub('jdw')" class="px-5 py-2.5 font-semibold text-gray-500 hover:text-blue-600 rounded-t-lg text-sm">Jadwal Periode</button><button id="kpSub-dat" onclick="switchKPSub('dat')" class="px-5 py-2.5 font-semibold text-gray-500 hover:text-blue-600 rounded-t-lg text-sm">Data Pegawai</button></div><div id="kpSubContent"></div></div>`;switchKPSub('dok');}
+
 function switchKPSub(tab){['dok','jdw','dat'].forEach(t=>{const b=document.getElementById('kpSub-'+t);if(t===tab){b.classList.add('text-blue-600','border-b-4','border-blue-600');b.classList.remove('text-gray-500');}else{b.classList.remove('text-blue-600','border-b-4','border-blue-600');b.classList.add('text-gray-500');}});const el=document.getElementById('kpSubContent');if(tab==='dok')renderAdmDokKP(el);if(tab==='jdw')renderAdmJadwalKP(el);if(tab==='dat')renderAdmDataKP(el);}
-function renderAdmDokKP(el){el.innerHTML=`<div class="space-y-5 mt-4"><div class="bg-red-50 p-6 rounded-xl border-2 border-red-200"><h4 class="font-bold text-lg mb-4 text-red-800">Tambah Dokumen Persyaratan (PDF)</h4><input id="dpTitle" type="text" placeholder="Judul dokumen" class="w-full p-3 border-2 border-gray-300 rounded-lg mb-3"><input id="dpDesc" type="text" placeholder="Deskripsi (opsional)" class="w-full p-3 border-2 border-gray-300 rounded-lg mb-3"><input id="dpUrl" type="text" placeholder="URL PDF / Google Drive" class="w-full p-3 border-2 border-gray-300 rounded-lg mb-3"><button onclick="addDokKP()" class="bg-red-600 text-white px-6 py-3 rounded-lg font-semibold">Tambah Dokumen</button></div><div class="bg-white rounded-xl border-2 border-gray-200 p-5"><h4 class="font-bold text-lg mb-4">Daftar Dokumen (${dokumenPersyaratan.length})</h4>${dokumenPersyaratan.length===0?'<p class="text-gray-400 text-center py-6">Belum ada dokumen.</p>':dokumenPersyaratan.map((d,i)=>`<div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200 mb-3"><div><p class="font-bold text-gray-800">${d.title}</p>${d.description?`<p class="text-xs text-gray-500">${d.description}</p>`:''}<a href="${d.url}" target="_blank" class="text-xs text-blue-500 hover:underline">${d.url}</a></div><button onclick="delDokKP(${i})" class="text-red-600 p-2 rounded-lg ml-4"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button></div>`).join('')}</div></div>`;}
-function addDokKP(){const t=document.getElementById('dpTitle').value.trim(),d=document.getElementById('dpDesc').value.trim(),u=document.getElementById('dpUrl').value.trim();if(!t||!u){toast('Judul dan URL wajib!','error');return;}dokumenPersyaratan.push({title:t,description:d,url:u});saveDokumenPersyaratan();toast('Dokumen ditambahkan!');renderAdmDokKP(document.getElementById('kpSubContent'));}
-function delDokKP(i){const l=dokumenPersyaratan[i]?.title;dokumenPersyaratan.splice(i,1);saveDokumenPersyaratan();toast('"'+l+'" dihapus');renderAdmDokKP(document.getElementById('kpSubContent'));}
+
+function renderAdmDokKP(el){
+    const listHtml = kpRequirements.map((req, i) => `
+        <div class="flex items-start gap-3 p-4 bg-gray-50 rounded-xl border border-gray-200 mb-2">
+            <span class="w-7 h-7 rounded-full bg-indigo-600 text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">${i+1}</span>
+            <div class="flex-1">
+                <p class="font-semibold text-gray-800 text-sm">${req.text}</p>
+                ${req.note ? `<p class="text-xs text-gray-500 mt-0.5 italic">💡 ${req.note}</p>` : ''}
+                ${req.sub && req.sub.length ? `<ul class="mt-1 space-y-0.5">${req.sub.map(s=>`<li class="text-xs text-gray-600 flex items-center gap-1.5 ml-2">→ ${s}</li>`).join('')}</ul>` : ''}
+            </div>
+            <button onclick="delKPReq(${i})" class="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-50 flex-shrink-0" title="Hapus">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            </button>
+        </div>`).join('');
+
+    el.innerHTML = `<div class="space-y-5 mt-4">
+        <div class="bg-indigo-50 p-6 rounded-xl border-2 border-indigo-200">
+            <h4 class="font-bold text-lg mb-4 text-indigo-800">Tambah Item Persyaratan</h4>
+            <input id="kpReqText" type="text" placeholder="Nama/teks persyaratan (wajib) *" class="w-full p-3 border-2 border-gray-300 rounded-lg mb-3">
+            <input id="kpReqNote" type="text" placeholder="Catatan tambahan (opsional)" class="w-full p-3 border-2 border-gray-300 rounded-lg mb-3">
+            <div class="mb-2">
+                <label class="block text-sm font-semibold text-gray-600 mb-1">Sub-item / rincian (pisahkan dengan | jika lebih dari satu)</label>
+                <input id="kpReqSub" type="text" placeholder="cth: Dokumen A | Dokumen B | Dokumen C" class="w-full p-3 border-2 border-gray-300 rounded-lg">
+            </div>
+            <button onclick="addKPReq()" class="mt-2 bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold">+ Tambah Persyaratan</button>
+        </div>
+        <div class="bg-white rounded-xl border-2 border-gray-200 p-5">
+            <div class="flex items-center justify-between mb-4">
+                <h4 class="font-bold text-lg">Daftar Persyaratan (${kpRequirements.length})</h4>
+                <button onclick="resetKPReqToDefault()" class="text-xs text-amber-600 border border-amber-300 px-3 py-1.5 rounded-lg hover:bg-amber-50 font-semibold">↩ Reset ke Default</button>
+            </div>
+            ${kpRequirements.length === 0
+                ? '<p class="text-gray-400 text-center py-6">Belum ada persyaratan.</p>'
+                : listHtml}
+        </div>
+    </div>`;
+}
+
+function addKPReq(){
+    const text=document.getElementById('kpReqText').value.trim();
+    if(!text){toast('Teks persyaratan wajib diisi!','error');return;}
+    const note=document.getElementById('kpReqNote').value.trim();
+    const subRaw=document.getElementById('kpReqSub').value.trim();
+    const sub=subRaw?subRaw.split('|').map(s=>s.trim()).filter(Boolean):[];
+    kpRequirements.push({id:Date.now(),text,note:note||null,sub});
+    saveKPRequirements();
+    toast('Persyaratan ditambahkan!');
+    renderAdmDokKP(document.getElementById('kpSubContent'));
+    renderDokumenPersyaratan(); // refresh public view
+}
+
+function delKPReq(i){
+    const label=kpRequirements[i]?.text;
+    kpRequirements.splice(i,1);
+    saveKPRequirements();
+    toast('"'+label+'" dihapus');
+    renderAdmDokKP(document.getElementById('kpSubContent'));
+    renderDokumenPersyaratan();
+}
+
+function resetKPReqToDefault(){
+    if(!confirm('Reset daftar persyaratan ke default? Perubahan yang ada akan hilang.')) return;
+    kpRequirements=[...DEFAULT_KP_REQUIREMENTS];
+    saveKPRequirements();
+    toast('Daftar persyaratan direset ke default');
+    renderAdmDokKP(document.getElementById('kpSubContent'));
+    renderDokumenPersyaratan();
+}
+
 function renderAdmJadwalKP(el){el.innerHTML=`<div class="space-y-5 mt-4"><div class="bg-green-50 p-6 rounded-xl border-2 border-green-200"><h4 class="font-bold text-lg mb-4 text-green-800">Tambah Jadwal Periode KP</h4><input id="jpPeriode" type="text" placeholder="Nama Periode" class="w-full p-3 border-2 border-gray-300 rounded-lg mb-3"><input id="jpTanggal" type="text" placeholder="Tanggal / Rentang Waktu" class="w-full p-3 border-2 border-gray-300 rounded-lg mb-3"><input id="jpKet" type="text" placeholder="Keterangan (opsional)" class="w-full p-3 border-2 border-gray-300 rounded-lg mb-3"><input id="jpPdf" type="text" placeholder="URL PDF Jadwal (opsional)" class="w-full p-3 border-2 border-gray-300 rounded-lg mb-3"><button onclick="addJadwal()" class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold">Tambah Jadwal</button></div><div class="bg-white rounded-xl border-2 border-gray-200 p-5"><h4 class="font-bold text-lg mb-4">Daftar Jadwal (${jadwalKP.length})</h4>${jadwalKP.length===0?'<p class="text-gray-400 text-center py-6">Belum ada jadwal.</p>':jadwalKP.map((d,i)=>`<div class="flex items-start justify-between p-4 bg-gray-50 rounded-xl border border-gray-200 mb-3"><div><p class="font-bold text-gray-800">${d.periode}</p>${d.tanggal?`<p class="text-sm text-green-700">${d.tanggal}</p>`:''} ${d.keterangan?`<p class="text-xs text-gray-500">${d.keterangan}</p>`:''} ${d.pdfUrl?`<a href="${d.pdfUrl}" target="_blank" class="text-xs text-red-500 hover:underline">${d.pdfUrl}</a>`:'<span class="text-xs text-gray-400">Belum ada PDF</span>'}</div><button onclick="delJadwal(${i})" class="text-red-600 p-2 rounded-lg ml-4"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button></div>`).join('')}</div></div>`;}
 function addJadwal(){const p=document.getElementById('jpPeriode').value.trim();if(!p){toast('Nama periode wajib!','error');return;}jadwalKP.push({periode:p,tanggal:document.getElementById('jpTanggal').value.trim(),keterangan:document.getElementById('jpKet').value.trim(),pdfUrl:document.getElementById('jpPdf').value.trim()});saveJadwalKP();toast('Jadwal ditambahkan!');renderAdmJadwalKP(document.getElementById('kpSubContent'));}
 function delJadwal(i){const l=jadwalKP[i]?.periode;jadwalKP.splice(i,1);saveJadwalKP();toast('"'+l+'" dihapus');renderAdmJadwalKP(document.getElementById('kpSubContent'));}
@@ -1001,9 +1188,7 @@ function addCustomMenu(){const l=document.getElementById('mLabel').value.trim(),
 function delCustomMenu(i){const l=customMenus[i]?.label;customMenus.splice(i,1);saveCustomMenus();renderCustomMenus();toast('"'+l+'" dihapus');renderAdmMenu();}
 
 document.addEventListener('DOMContentLoaded', function(){
-    if(window.innerWidth < 769){
-        document.getElementById('sidebar').classList.add('sidebar-collapsed');
-    }
+    if(window.innerWidth < 769){document.getElementById('sidebar').classList.add('sidebar-collapsed');}
     init();
 });
 </script>
